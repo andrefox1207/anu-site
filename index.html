@@ -7,166 +7,188 @@
 <meta name="description" content="Your own AI command center. One file, your data, runs on your machine. The dashboard 100+ people asked for."/>
 <meta property="og:title" content="ANU — Build your own JARVIS"/>
 <meta property="og:description" content="A self-hosted AI command center. Dashboard, pipelines, and agents that keep working while you sleep."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <style>
-  :root {
-    --bg:#080b12; --bg-2:#0b1019; --panel:#0f1622; --panel-2:#131d2c;
-    --line:#1d2941; --line-2:#27364f; --ink:#d6deea; --ink-2:#8c99ad; --ink-3:#5b6678;
-    --cyan:#2ce3ff; --cyan-dim:#1a9fbd; --amber:#f5b13d; --amber-dim:#c2842a; --good:#46dd8a;
-    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
-    --maxw:1080px; --pad:clamp(20px,5vw,56px);
+  :root{
+    --bg:#0a0b0e; --bg-2:#0f1013; --panel:#141519; --panel-2:#191a20;
+    --line:#23252c; --line-2:#2e313a;
+    --ink:#eceef2; --ink-2:#9b9da7; --ink-3:#63656f;
+    --coral:#ff6b52; --coral-2:#ff8f74; --coral-deep:#e2492c; --coral-soft:rgba(255,107,82,.14);
+    --good:#4bd989;
+    --sans:"Inter Tight", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+    --maxw:1140px; --pad:clamp(20px,5vw,56px);
+    --nsh: 6px 6px 16px #050507, -5px -5px 14px #191b22;   /* neumorphic raised */
+    --nsh-in: inset 4px 4px 10px #050507, inset -4px -4px 10px #191b22;
   }
-  * { box-sizing:border-box; }
-  html { scroll-behavior:smooth; }
-  body { margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); font-size:17px; line-height:1.6; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
-  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;} }
-  a { color:inherit; text-decoration:none; }
-  ::selection { background:rgba(44,227,255,.28); color:#fff; }
-  :focus-visible { outline:2px solid var(--cyan); outline-offset:3px; border-radius:3px; }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;letter-spacing:-0.01em;}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} *{animation:none!important;transition-duration:.001ms!important;} }
+  a{color:inherit;text-decoration:none;}
+  ::selection{background:rgba(255,107,82,.3);color:#fff;}
+  :focus-visible{outline:2px solid var(--coral);outline-offset:3px;border-radius:4px;}
 
-  /* ambient 3D field behind everything */
-  #bg3d { position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.55; }
-  .layer { position:relative; z-index:1; }
+  /* full-bleed 3D brain background */
+  #brain-bg{position:fixed;inset:0;z-index:0;pointer-events:none;}
+  .bg-veil{position:fixed;inset:0;z-index:1;pointer-events:none;
+    background:radial-gradient(72% 58% at 50% 36%, transparent 32%, rgba(10,11,14,.5) 88%),
+               linear-gradient(180deg, rgba(10,11,14,.12) 0%, rgba(10,11,14,.42) 56%, var(--bg) 100%);}
+  .layer{position:relative;z-index:2;}
 
-  .hud-frame { position:fixed; inset:10px; border:1px solid var(--line); pointer-events:none; z-index:60; }
-  .hud-frame::before,.hud-frame::after,.hud-corner::before,.hud-corner::after { content:""; position:absolute; width:16px; height:16px; border:2px solid var(--cyan); opacity:.75; }
-  .hud-frame::before{top:-1px;left:-1px;border-right:0;border-bottom:0;} .hud-frame::after{top:-1px;right:-1px;border-left:0;border-bottom:0;}
-  .hud-corner::before{bottom:-1px;left:-1px;border-right:0;border-top:0;} .hud-corner::after{bottom:-1px;right:-1px;border-left:0;border-top:0;}
-  @media (max-width:640px){ .hud-frame{inset:5px;} }
+  .wrap{max-width:var(--maxw);margin:0 auto;padding-left:var(--pad);padding-right:var(--pad);}
+  .mono{font-family:var(--mono);}
+  .eyebrow{font-size:12.5px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--coral);display:inline-flex;align-items:center;gap:10px;}
+  .eyebrow::before{content:"";width:24px;height:1px;background:var(--coral);opacity:.7;}
+  .section{padding:clamp(66px,9vw,124px) 0;position:relative;}
+  .section-label{font-size:12.5px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3);margin:0 0 34px;}
+  .section-label b{color:var(--coral);font-weight:700;}
+  h1,h2,h3{margin:0;font-weight:800;letter-spacing:-.035em;line-height:1.02;text-wrap:balance;}
+  .divider{height:1px;background:linear-gradient(90deg,transparent,var(--line-2) 25%,var(--line-2) 75%,transparent);border:0;margin:0;}
 
-  .wrap { max-width:var(--maxw); margin:0 auto; padding-left:var(--pad); padding-right:var(--pad); }
-  .mono { font-family:var(--mono); }
-  .eyebrow { font-family:var(--mono); font-size:12.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--cyan); display:inline-flex; align-items:center; gap:9px; }
-  .eyebrow::before { content:""; width:22px; height:1px; background:var(--cyan); opacity:.6; }
-  .section { padding:clamp(64px,9vw,120px) 0; position:relative; }
-  .section-label { font-family:var(--mono); font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-3); margin:0 0 34px; }
-  .section-label b { color:var(--cyan); font-weight:600; }
-  h1,h2,h3 { text-wrap:balance; margin:0; font-weight:800; letter-spacing:-.02em; line-height:1.04; }
-  .divider { height:1px; background:linear-gradient(90deg,transparent,var(--line-2) 25%,var(--line-2) 75%,transparent); border:0; margin:0; }
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-family:var(--sans);font-size:15.5px;font-weight:600;letter-spacing:-.01em;padding:15px 28px;border-radius:14px;cursor:pointer;border:1px solid transparent;transition:transform .16s ease, box-shadow .22s ease, background .2s ease;}
+  .btn-primary{background:linear-gradient(180deg,var(--coral-2),var(--coral));color:#2a0d06;box-shadow:0 10px 30px rgba(255,107,82,.30), inset 0 1px 0 rgba(255,255,255,.35);}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 44px rgba(255,107,82,.42), inset 0 1px 0 rgba(255,255,255,.4);}
+  .btn-neu{background:var(--panel);color:var(--ink);box-shadow:var(--nsh);}
+  .btn-neu:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(0,0,0,.5), -4px -4px 12px #191b22, 4px 4px 12px #050507;color:#fff;}
+  .btn-neu:active{box-shadow:var(--nsh-in);transform:translateY(0);}
+  .btn-sm{padding:11px 20px;font-size:14px;border-radius:12px;}
 
-  .btn { display:inline-flex; align-items:center; justify-content:center; gap:10px; font-family:var(--mono); font-size:14px; font-weight:600; letter-spacing:.02em; padding:15px 26px; border-radius:10px; cursor:pointer; border:1px solid transparent; transition:transform .15s ease, box-shadow .2s ease, border-color .2s ease; }
-  .btn-primary { background:var(--amber); color:#1a1206; box-shadow:0 8px 30px rgba(245,177,61,.22); }
-  .btn-primary:hover { transform:translateY(-2px); box-shadow:0 14px 40px rgba(245,177,61,.34); }
-  .btn-ghost { background:rgba(255,255,255,.02); color:var(--ink); border-color:var(--line-2); }
-  .btn-ghost:hover { border-color:var(--cyan); color:#fff; transform:translateY(-2px); }
-  .btn-sm { padding:10px 18px; font-size:13px; }
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1;transform:none;}
 
-  .reveal { opacity:0; transform:translateY(22px); transition:opacity .7s ease, transform .7s ease; }
-  .reveal.in { opacity:1; transform:none; }
+  /* nav */
+  header.nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);background:rgba(10,11,14,.7);border-bottom:1px solid var(--line);}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:66px;}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:19px;letter-spacing:-.02em;}
+  .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--coral);box-shadow:0 0 14px var(--coral);animation:pulse 2.4s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  .brand .tag{color:var(--ink-3);font-size:12px;font-weight:500;letter-spacing:.02em;}
+  .nav-right{display:flex;align-items:center;gap:20px;}
+  .nav-links{display:flex;gap:26px;}
+  .nav-links a{font-size:14.5px;color:var(--ink-2);font-weight:500;}
+  .nav-links a:hover{color:var(--ink);}
+  @media (max-width:820px){ .nav-links{display:none;} }
 
-  header.nav { position:sticky; top:0; z-index:50; backdrop-filter:blur(10px); background:rgba(8,11,18,.72); border-bottom:1px solid var(--line); }
-  .nav-in { display:flex; align-items:center; justify-content:space-between; height:62px; }
-  .brand { display:flex; align-items:center; gap:11px; font-family:var(--mono); font-weight:700; letter-spacing:.04em; }
-  .brand .dot { width:9px; height:9px; border-radius:50%; background:var(--cyan); box-shadow:0 0 12px var(--cyan); animation:pulse 2.4s ease-in-out infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
-  .brand .tag { color:var(--ink-3); font-size:11px; letter-spacing:.14em; }
-  .nav-right { display:flex; align-items:center; gap:18px; }
-  .nav-tele { font-family:var(--mono); font-size:11.5px; color:var(--ink-3); letter-spacing:.08em; }
-  .nav-tele b { color:var(--good); font-weight:600; }
-  @media (max-width:720px){ .nav-tele{display:none;} }
+  /* hero */
+  .hero{text-align:center;padding-top:clamp(60px,10vw,120px);padding-bottom:clamp(30px,5vw,60px);}
+  .hero .eyebrow{justify-content:center;}
+  .hero h1{font-size:clamp(44px,8vw,94px);font-weight:900;margin:22px auto 0;max-width:15ch;}
+  .hero h1 .accent{background:linear-gradient(120deg,var(--coral-2),var(--coral));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .hero .sub{color:var(--ink-2);font-size:clamp(17px,2.1vw,21px);max-width:56ch;margin:24px auto 0;font-weight:400;}
+  .hero .cta-row{display:flex;flex-wrap:wrap;gap:15px;justify-content:center;margin-top:36px;}
+  .hero .microcopy{font-size:13px;color:var(--ink-3);margin-top:18px;font-weight:500;}
 
-  .hero { padding-top:clamp(46px,7vw,84px); padding-bottom:clamp(40px,6vw,72px); }
-  .hero-grid { display:grid; grid-template-columns:1.05fr .95fr; gap:clamp(28px,4vw,56px); align-items:center; }
-  @media (max-width:900px){ .hero-grid{grid-template-columns:1fr;} }
-  .hero h1 { font-size:clamp(38px,6.6vw,74px); margin:20px 0 0; }
-  .hero h1 .accent { color:var(--cyan); }
-  .hero .sub { color:var(--ink-2); font-size:clamp(16px,2vw,19px); max-width:36ch; margin:22px 0 0; }
-  .hero .cta-row { display:flex; flex-wrap:wrap; gap:14px; margin-top:32px; }
-  .hero .microcopy { font-family:var(--mono); font-size:12px; color:var(--ink-3); margin-top:16px; letter-spacing:.03em; }
+  /* stats */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:clamp(48px,7vw,84px);}
+  @media (max-width:720px){ .stats{grid-template-columns:repeat(2,1fr);gap:14px;} }
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:26px 20px;box-shadow:var(--nsh);}
+  .stat .num{font-size:clamp(30px,4vw,44px);font-weight:800;letter-spacing:-.04em;color:#fff;font-variant-numeric:tabular-nums;}
+  .stat .num .u{color:var(--coral);}
+  .stat .lbl{font-size:13px;color:var(--ink-2);margin-top:6px;font-weight:500;}
 
-  .stage { position:relative; border:1px solid var(--line-2); border-radius:16px; overflow:hidden; background:linear-gradient(180deg,var(--panel-2),var(--panel)); box-shadow:0 30px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.03); }
-  .stage-bar { display:flex; align-items:center; gap:8px; padding:11px 14px; border-bottom:1px solid var(--line); font-family:var(--mono); font-size:11px; color:var(--ink-3); }
-  .stage-bar .lights { display:flex; gap:6px; } .stage-bar .lights i { width:9px; height:9px; border-radius:50%; display:block; background:var(--line-2); } .stage-bar .lights i:first-child{ background:var(--amber-dim); }
-  .stage-bar .title { margin-left:6px; letter-spacing:.1em; }
-  #brain { display:block; width:100%; height:320px; background:radial-gradient(120% 120% at 50% 40%, rgba(44,227,255,.07), transparent 62%); cursor:grab; }
-  @media (max-width:900px){ #brain{ height:260px; } }
-  .stage-term { border-top:1px solid var(--line); padding:14px 16px; font-family:var(--mono); font-size:12.5px; line-height:1.7; min-height:150px; color:var(--ink-2); }
-  .stage-term .ok{color:var(--good);} .stage-term .c{color:var(--cyan);} .stage-term .a{color:var(--amber);}
-  .stage-term .cursor{ display:inline-block; width:8px; height:15px; background:var(--cyan); vertical-align:-2px; animation:blink 1s steps(1) infinite; }
-  @keyframes blink { 50%{opacity:0;} }
+  /* marquee */
+  .marquee{overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg-2);padding:22px 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);}
+  .marquee-track{display:flex;gap:52px;width:max-content;animation:scroll 26s linear infinite;}
+  .marquee span{font-size:16px;font-weight:600;color:var(--ink-2);letter-spacing:.01em;white-space:nowrap;display:inline-flex;align-items:center;gap:52px;}
+  .marquee span::after{content:"◇";color:var(--coral);opacity:.6;}
+  @keyframes scroll{to{transform:translateX(-50%);}}
 
-  .proof { background:var(--bg-2); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
-  .chips { display:flex; flex-wrap:wrap; gap:12px; margin-top:26px; }
-  .chip { display:inline-flex; align-items:center; gap:10px; padding:11px 16px; border-radius:999px; background:var(--panel); border:1px solid var(--line-2); color:var(--ink); font-size:14.5px; }
-  .chip .av { width:22px; height:22px; border-radius:50%; flex:none; background:linear-gradient(135deg,var(--cyan-dim),var(--panel-2)); }
-  .chip .h { color:var(--ink-3); font-family:var(--mono); font-size:12px; }
-
-  .grid-2 { display:grid; grid-template-columns:repeat(2,1fr); gap:18px; }
+  /* cards */
+  .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
   @media (max-width:860px){ .grid-2{grid-template-columns:1fr;} }
-  .card { background:linear-gradient(180deg,var(--panel),var(--bg-2)); border:1px solid var(--line); border-radius:14px; padding:26px 24px; transition:border-color .2s ease, transform .2s ease; }
-  .card:hover { border-color:var(--line-2); transform:translateY(-3px); }
-  .card .k { font-family:var(--mono); font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--cyan); }
-  .card h3 { font-size:21px; margin:14px 0 8px; font-weight:700; }
-  .card p { color:var(--ink-2); font-size:15.5px; margin:0; }
-  .card .glyph { font-family:var(--mono); font-size:22px; color:var(--ink-3); float:right; }
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:30px 28px;transition:border-color .2s ease, transform .2s ease;}
+  .card:hover{border-color:var(--line-2);transform:translateY(-4px);}
+  .card .ic{width:44px;height:44px;border-radius:12px;background:var(--coral-soft);display:flex;align-items:center;justify-content:center;color:var(--coral);font-size:20px;margin-bottom:18px;}
+  .card .k{font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--coral);}
+  .card h3{font-size:22px;margin:10px 0 8px;font-weight:700;letter-spacing:-.025em;}
+  .card p{color:var(--ink-2);font-size:15.5px;margin:0;font-weight:400;}
 
-  .incl { display:grid; grid-template-columns:1fr 1fr; gap:12px 34px; margin-top:8px; }
+  .incl{display:grid;grid-template-columns:1fr 1fr;gap:12px 36px;}
   @media (max-width:720px){ .incl{grid-template-columns:1fr;} }
-  .incl .row { display:flex; gap:13px; align-items:flex-start; padding:12px 0; border-bottom:1px solid var(--line); }
-  .incl .row svg { flex:none; margin-top:3px; } .incl .row b{font-weight:600;} .incl .row span{color:var(--ink-2);font-size:14.5px;}
+  .incl .row{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line);}
+  .incl .row .chk{flex:none;width:22px;height:22px;border-radius:7px;background:var(--coral-soft);color:var(--coral);display:flex;align-items:center;justify-content:center;margin-top:2px;font-size:13px;font-weight:800;}
+  .incl .row b{font-weight:600;} .incl .row span{color:var(--ink-2);font-size:15px;}
 
-  .steps { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
   @media (max-width:860px){ .steps{grid-template-columns:1fr;} }
-  .step { border:1px solid var(--line); border-radius:14px; padding:26px 24px; background:var(--bg-2); }
-  .step .n { font-family:var(--mono); font-size:13px; color:var(--amber); letter-spacing:.1em; }
-  .step h3 { font-size:19px; margin:12px 0 8px; } .step p{color:var(--ink-2);font-size:15px;margin:0;}
+  .step{border:1px solid var(--line);border-radius:20px;padding:28px 26px;background:var(--panel);}
+  .step .n{font-size:13px;font-weight:700;color:var(--coral);letter-spacing:.08em;}
+  .step h3{font-size:20px;margin:12px 0 8px;letter-spacing:-.025em;} .step p{color:var(--ink-2);font-size:15px;margin:0;}
 
-  .prices { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; align-items:stretch; }
+  /* pricing */
+  .prices{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch;}
   @media (max-width:860px){ .prices{grid-template-columns:1fr;} }
-  .price { display:flex; flex-direction:column; border:1px solid var(--line); border-radius:16px; padding:30px 26px; background:linear-gradient(180deg,var(--panel),var(--bg-2)); }
-  .price.feat { border-color:var(--amber); box-shadow:0 0 0 1px var(--amber-dim), 0 20px 60px rgba(245,177,61,.12); }
-  .price .plan { font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); }
-  .price.feat .plan { color:var(--amber); }
-  .price .amt { font-size:46px; font-weight:800; letter-spacing:-.03em; margin:12px 0 2px; }
-  .price .amt small { font-size:15px; color:var(--ink-3); font-weight:500; letter-spacing:0; }
-  .price .desc { color:var(--ink-2); font-size:14.5px; min-height:42px; }
-  .price ul { list-style:none; padding:0; margin:18px 0 24px; display:flex; flex-direction:column; gap:11px; }
-  .price li { display:flex; gap:11px; align-items:flex-start; font-size:14.5px; color:var(--ink); }
-  .price li svg { flex:none; margin-top:3px; }
-  .price .btn { margin-top:auto; width:100%; }
-  .price .badge { align-self:flex-start; font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:#1a1206; background:var(--amber); padding:4px 10px; border-radius:6px; margin-bottom:14px; }
-  .funnel-note { text-align:center; margin-top:24px; font-family:var(--mono); font-size:13px; color:var(--ink-3); }
-  .funnel-note a { color:var(--cyan); border-bottom:1px solid var(--cyan-dim); padding-bottom:1px; }
+  .price{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:22px;padding:32px 28px;background:var(--panel);}
+  .price.feat{border-color:var(--coral);background:linear-gradient(180deg,rgba(255,107,82,.06),var(--panel));box-shadow:0 24px 60px rgba(255,107,82,.14);}
+  .price .plan{font-size:12.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);}
+  .price.feat .plan{color:var(--coral);}
+  .price .amt{font-size:52px;font-weight:900;letter-spacing:-.045em;margin:12px 0 2px;}
+  .price .amt small{font-size:15px;color:var(--ink-3);font-weight:500;letter-spacing:0;}
+  .price .desc{color:var(--ink-2);font-size:14.5px;min-height:44px;font-weight:400;}
+  .price ul{list-style:none;padding:0;margin:20px 0 26px;display:flex;flex-direction:column;gap:12px;}
+  .price li{display:flex;gap:11px;align-items:flex-start;font-size:14.5px;color:var(--ink);}
+  .price li .chk{color:var(--coral);flex:none;font-weight:800;}
+  .price .btn{margin-top:auto;width:100%;}
+  .price .badge{align-self:flex-start;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#2a0d06;background:var(--coral);padding:5px 11px;border-radius:8px;margin-bottom:16px;}
+  .funnel-note{text-align:center;margin-top:26px;font-size:14px;color:var(--ink-3);}
+  .funnel-note a{color:var(--coral);border-bottom:1px solid var(--coral-deep);padding-bottom:1px;}
 
-  .forwho { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  /* proof / testimonials */
+  .tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  @media (max-width:860px){ .tgrid{grid-template-columns:1fr;} }
+  .tcard{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px;}
+  .tcard .q{font-size:17px;color:var(--ink);font-weight:500;letter-spacing:-.01em;}
+  .tcard .who{display:flex;align-items:center;gap:10px;margin-top:18px;}
+  .tcard .av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--coral),var(--coral-deep));flex:none;}
+  .tcard .who .h{font-size:13px;color:var(--ink-3);}
+  .tcard .who b{font-size:14px;}
+
+  .forwho{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
   @media (max-width:720px){ .forwho{grid-template-columns:1fr;} }
-  .fw { border:1px solid var(--line); border-radius:14px; padding:24px; background:var(--bg-2); }
-  .fw h3 { font-size:16px; font-family:var(--mono); letter-spacing:.06em; margin-bottom:14px; }
+  .fw{border:1px solid var(--line);border-radius:20px;padding:26px;background:var(--panel);}
+  .fw h3{font-size:15px;letter-spacing:.04em;margin-bottom:16px;text-transform:uppercase;font-weight:700;}
   .fw.yes h3{color:var(--good);} .fw.no h3{color:var(--ink-3);}
-  .fw ul { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
-  .fw li { color:var(--ink-2); font-size:15px; padding-left:22px; position:relative; }
-  .fw.yes li::before{content:"▸";position:absolute;left:0;color:var(--good);}
-  .fw.no li::before{content:"×";position:absolute;left:0;color:var(--ink-3);}
+  .fw ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:11px;}
+  .fw li{color:var(--ink-2);font-size:15px;padding-left:24px;position:relative;}
+  .fw.yes li::before{content:"✓";position:absolute;left:0;color:var(--good);font-weight:800;}
+  .fw.no li::before{content:"✕";position:absolute;left:0;color:var(--ink-3);}
 
-  .faq details { border-bottom:1px solid var(--line); padding:8px 0; }
-  .faq summary { cursor:pointer; list-style:none; padding:16px 4px; display:flex; justify-content:space-between; align-items:center; gap:16px; font-weight:600; font-size:17px; }
+  .faq details{border:1px solid var(--line);border-radius:16px;margin-bottom:12px;background:var(--panel);overflow:hidden;}
+  .faq summary{cursor:pointer;list-style:none;padding:22px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px;font-weight:600;font-size:17.5px;letter-spacing:-.02em;}
   .faq summary::-webkit-details-marker{display:none;}
-  .faq summary .plus { font-family:var(--mono); color:var(--cyan); transition:transform .2s ease; flex:none; }
-  .faq details[open] summary .plus { transform:rotate(45deg); }
-  .faq p { margin:0 4px 18px; color:var(--ink-2); font-size:15.5px; }
+  .faq summary .plus{color:var(--coral);font-size:24px;transition:transform .2s ease;flex:none;line-height:1;}
+  .faq details[open] summary .plus{transform:rotate(45deg);}
+  .faq p{margin:0 24px 22px;color:var(--ink-2);font-size:15.5px;}
 
-  .founder { background:linear-gradient(180deg,var(--bg-2),var(--bg)); border-top:1px solid var(--line); }
-  .founder-in { display:grid; grid-template-columns:auto 1fr; gap:26px; align-items:start; }
+  .founder{position:relative;}
+  .founder-in{display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:start;background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:clamp(28px,5vw,48px);}
   @media (max-width:640px){ .founder-in{grid-template-columns:1fr;} }
-  .founder .badge-op { width:84px; height:84px; border-radius:16px; flex:none; background:radial-gradient(circle at 35% 30%,var(--amber),var(--amber-dim)); display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-weight:800; color:#1a1206; font-size:30px; box-shadow:0 12px 40px rgba(245,177,61,.22); }
-  .founder p { color:var(--ink); font-size:17px; max-width:62ch; } .founder .sig { font-family:var(--mono); color:var(--amber); margin-top:14px; font-size:14px; } .founder .meta { color:var(--ink-3); font-family:var(--mono); font-size:12px; letter-spacing:.08em; }
+  .founder .badge-op{width:88px;height:88px;border-radius:20px;flex:none;background:linear-gradient(135deg,var(--coral-2),var(--coral-deep));display:flex;align-items:center;justify-content:center;font-weight:900;color:#2a0d06;font-size:32px;box-shadow:0 14px 40px rgba(255,107,82,.28);}
+  .founder p{color:var(--ink);font-size:17.5px;max-width:64ch;font-weight:400;} .founder .sig{color:var(--coral);margin-top:16px;font-weight:600;font-size:15px;} .founder .meta{color:var(--ink-3);font-size:12.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;}
 
-  .final { text-align:center; } .final h2 { font-size:clamp(30px,5vw,54px); } .final .sub { color:var(--ink-2); margin:18px auto 0; max-width:48ch; } .final .cta-row { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:34px; }
-  footer { border-top:1px solid var(--line); padding:30px 0; }
-  .foot-in { display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; font-family:var(--mono); font-size:12px; color:var(--ink-3); }
-  footer a:hover { color:var(--cyan); }
+  .final{text-align:center;} .final h2{font-size:clamp(34px,6vw,64px);font-weight:900;} .final .sub{color:var(--ink-2);margin:20px auto 0;max-width:50ch;} .final .cta-row{display:flex;gap:15px;justify-content:center;flex-wrap:wrap;margin-top:36px;}
+  footer{border-top:1px solid var(--line);padding:34px 0;}
+  .foot-in{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--ink-3);font-weight:500;}
+  footer a:hover{color:var(--coral);}
 </style>
 </head>
 <body>
-<canvas id="bg3d" aria-hidden="true"></canvas>
-<div class="hud-frame"><div class="hud-corner"></div></div>
+<canvas id="brain-bg" aria-hidden="true"></canvas>
+<div class="bg-veil"></div>
 
 <div class="layer">
 <header class="nav">
   <div class="wrap nav-in">
-    <div class="brand"><span class="dot"></span><span data-brand>ANU</span><span class="tag">// OS</span></div>
+    <div class="brand"><span class="dot"></span><span data-brand>ANU</span><span class="tag">/ OS</span></div>
+    <nav class="nav-links">
+      <a href="#features">System</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </nav>
     <div class="nav-right">
-      <span class="nav-tele">STATUS <b>ONLINE</b> · <span data-clock>--:--:--</span> CT</span>
       <a class="btn btn-primary btn-sm" data-buy="template" href="#pricing">Get Access</a>
     </div>
   </div>
@@ -174,52 +196,41 @@
 
 <!-- HERO -->
 <section class="hero wrap">
-  <div class="hero-grid">
-    <div>
-      <span class="eyebrow">Meet ANU · self-hosted AI command center</span>
-      <h1>Build your own <span class="accent">JARVIS.</span></h1>
-      <p class="sub"><b style="color:var(--ink)">ANU</b> is one file, your data, running on your machine — the AI second brain <b style="color:var(--ink)">100+ of you</b> asked me to hand over. Dashboard, pipelines, and agents that keep working while you sleep.</p>
-      <div class="cta-row">
-        <a class="btn btn-primary" data-buy="template" href="#pricing">Get instant access — $47</a>
-        <a class="btn btn-ghost" data-discord href="#">Join the Secret Society (free)</a>
-      </div>
-      <p class="microcopy">no subscription · no API keys required · yours forever</p>
-    </div>
+  <span class="eyebrow">Meet ANU · self-hosted AI command center</span>
+  <h1>Build your own <span class="accent">JARVIS.</span></h1>
+  <p class="sub">One file. Your data. Runs on your machine. The AI second brain <b style="color:var(--ink)">100+ of you</b> asked me to hand over — a dashboard, pipelines, and agents that keep working while you sleep.</p>
+  <div class="cta-row">
+    <a class="btn btn-primary" data-buy="template" href="#pricing">Get instant access — $47</a>
+    <a class="btn btn-neu" data-discord href="#">Join the Secret Society (free)</a>
+  </div>
+  <p class="microcopy">no subscription · no API keys required · yours forever</p>
 
-    <div class="stage reveal">
-      <div class="stage-bar"><span class="lights"><i></i><i></i><i></i></span><span class="title" data-brand>ANU</span><span class="title">core · neural map</span></div>
-      <canvas id="brain" aria-hidden="true"></canvas>
-      <div class="stage-term" id="term" aria-hidden="true"></div>
-    </div>
+  <div class="stats">
+    <div class="stat reveal"><div class="num" data-count="100" data-suffix="+"><span>0</span></div><div class="lbl">comments asking “how?”</div></div>
+    <div class="stat reveal"><div class="num" data-count="1"><span>0</span></div><div class="lbl">file to run it all</div></div>
+    <div class="stat reveal"><div class="num">$<span data-count="0">0</span><span class="u">/mo</span></div><div class="lbl">to keep it running</div></div>
+    <div class="stat reveal"><div class="num" data-count="5" data-suffix=" min"><span>0</span></div><div class="lbl">from download to live</div></div>
   </div>
 </section>
 
-<!-- PROOF -->
-<section class="proof">
-  <div class="wrap section" style="padding-top:clamp(48px,7vw,84px);padding-bottom:clamp(48px,7vw,84px)">
-    <p class="section-label">// <b>01</b> · you already watched it work</p>
-    <h2 style="font-size:clamp(26px,3.6vw,40px);max-width:20ch">Every time I posted the dashboard, the comments said the same thing.</h2>
-    <div class="chips">
-      <span class="chip"><span class="av"></span>“bro how do I get this??”</span>
-      <span class="chip"><span class="av"></span>“drop the template 🙏”</span>
-      <span class="chip"><span class="av"></span>“need that SMS pipeline”</span>
-      <span class="chip"><span class="av"></span>“how’d you build the dashboard”</span>
-      <span class="chip"><span class="h">+ 90 more</span></span>
-    </div>
-    <p style="color:var(--ink-2);margin-top:26px;max-width:52ch">So instead of answering one DM at a time — here's the whole build. The exact system running behind @andrekingfox, packaged so you can stand up your own tonight.</p>
+<!-- STACK MARQUEE -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Obsidian</span><span>Notion</span><span>Ollama</span><span>Whisper</span><span>Kokoro TTS</span><span>Claude</span><span>Python</span>
+    <span>Obsidian</span><span>Notion</span><span>Ollama</span><span>Whisper</span><span>Kokoro TTS</span><span>Claude</span><span>Python</span>
   </div>
-</section>
+</div>
 
-<!-- WHAT IT IS -->
-<section class="section wrap">
-  <p class="section-label">// <b>02</b> · what's in the box</p>
-  <h2 style="font-size:clamp(28px,4vw,46px);max-width:16ch;margin-bottom:16px">The four systems from the videos — all yours.</h2>
-  <p style="color:var(--ink-2);max-width:54ch;margin:0 0 40px">Not a course full of theory. The actual working software, plus the walkthrough to make it yours.</p>
+<!-- FEATURES -->
+<section class="section wrap" id="features">
+  <p class="section-label">// <b>01</b> · what's in the box</p>
+  <h2 style="font-size:clamp(30px,4.4vw,50px);max-width:16ch;margin-bottom:16px">The four systems from the videos — all yours.</h2>
+  <p style="color:var(--ink-2);max-width:56ch;margin:0 0 44px;font-size:18px">Not a course full of theory. The actual working software, plus the walkthrough to make it yours.</p>
   <div class="grid-2">
-    <div class="card reveal"><span class="glyph">◉</span><span class="k">Command Deck</span><h3>The dark dashboard</h3><p>A 3D graph of everything you know — notes, tasks, priorities — with a HUD, an AI chat dock, and free in-browser voice. Single HTML file, no build step.</p></div>
-    <div class="card reveal"><span class="glyph">✉</span><span class="k">SMS Pipeline</span><h3>Text it, it files itself</h3><p>Send a link or a thought by text. It transcribes, summarizes, researches, and drops the result into your knowledge base — 24/7, untouched.</p></div>
-    <div class="card reveal"><span class="glyph">▤</span><span class="k">Instagram LENS</span><h3>Reels → intel</h3><p>Feed it reels in your niche. It downloads, transcribes, and watches them frame-by-frame, then hands you the hooks and moves worth stealing.</p></div>
-    <div class="card reveal"><span class="glyph">↻</span><span class="k">Live Loops</span><h3>Agents that don't clock out</h3><p>Background workers that run on a schedule — research, outreach drafts, daily briefs — so your system produces while you're on the job or asleep.</p></div>
+    <div class="card reveal"><div class="ic">◉</div><span class="k">Command Deck</span><h3>The dark dashboard</h3><p>A 3D graph of everything you know — notes, tasks, priorities — with a HUD, an AI chat dock, and free in-browser voice. Single HTML file, no build step.</p></div>
+    <div class="card reveal"><div class="ic">✉</div><span class="k">SMS Pipeline</span><h3>Text it, it files itself</h3><p>Send a link or a thought by text. It transcribes, summarizes, researches, and drops the result into your knowledge base — 24/7, untouched.</p></div>
+    <div class="card reveal"><div class="ic">▤</div><span class="k">Instagram LENS</span><h3>Reels → intel</h3><p>Feed it reels in your niche. It downloads, transcribes, and watches them frame-by-frame, then hands you the hooks and moves worth stealing.</p></div>
+    <div class="card reveal"><div class="ic">↻</div><span class="k">Live Loops</span><h3>Agents that don't clock out</h3><p>Background workers that run on a schedule — research, outreach drafts, daily briefs — so your system produces while you're on the job or asleep.</p></div>
   </div>
 </section>
 
@@ -227,28 +238,28 @@
 
 <!-- INCLUDED -->
 <section class="section wrap">
-  <p class="section-label">// <b>03</b> · everything you download</p>
-  <div style="display:grid;grid-template-columns:.85fr 1.15fr;gap:clamp(24px,4vw,52px)">
+  <p class="section-label">// <b>02</b> · everything you download</p>
+  <div style="display:grid;grid-template-columns:.85fr 1.15fr;gap:clamp(24px,4vw,56px)">
     <div>
-      <h2 style="font-size:clamp(26px,3.4vw,38px)">Local-first. <br/>No accounts. No cloud tax.</h2>
-      <p style="color:var(--ink-2);margin-top:16px;max-width:40ch">It runs on your laptop and talks only to the APIs you choose. Your notes never leave your machine.</p>
+      <h2 style="font-size:clamp(28px,3.8vw,42px)">Local-first.<br/>No accounts. No cloud tax.</h2>
+      <p style="color:var(--ink-2);margin-top:18px;max-width:40ch;font-size:17px">It runs on your laptop and talks only to the APIs you choose. Your notes never leave your machine.</p>
     </div>
     <div class="incl">
-      <div class="row"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 6.5" stroke="#2ce3ff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>The full command deck</b> — one <span class="mono">.html</span> file, sample data baked in so it demos instantly.</span></div>
-      <div class="row"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 6.5" stroke="#2ce3ff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Vault connector</b> — point it at your Obsidian or Notion and it rebuilds the graph from your real knowledge.</span></div>
-      <div class="row"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 6.5" stroke="#2ce3ff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>The SMS pipeline</b> — scripts + the launch setup that keeps it running in the background.</span></div>
-      <div class="row"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 6.5" stroke="#2ce3ff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Local brain option</b> — wire it to free local models (Ollama) so it runs with zero API keys.</span></div>
-      <div class="row"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 6.5" stroke="#2ce3ff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Free voice</b> — Kokoro-82M speaks in-browser, unlimited, with a built-in fallback.</span></div>
-      <div class="row"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 6.5" stroke="#2ce3ff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>The build guide</b> — step-by-step video + docs. If you can copy-paste, you can run this.</span></div>
+      <div class="row"><span class="chk">✓</span><span><b>The full command deck</b> — one <span class="mono">.html</span> file, sample data baked in so it demos instantly.</span></div>
+      <div class="row"><span class="chk">✓</span><span><b>Vault connector</b> — point it at your Obsidian or Notion and it rebuilds the graph from your real knowledge.</span></div>
+      <div class="row"><span class="chk">✓</span><span><b>The SMS pipeline</b> — scripts + the launch setup that keeps it running in the background.</span></div>
+      <div class="row"><span class="chk">✓</span><span><b>Local brain option</b> — wire it to free local models (Ollama) so it runs with zero API keys.</span></div>
+      <div class="row"><span class="chk">✓</span><span><b>Free voice</b> — Kokoro-82M speaks in-browser, unlimited, with a built-in fallback.</span></div>
+      <div class="row"><span class="chk">✓</span><span><b>The build guide</b> — step-by-step video + docs. If you can copy-paste, you can run this.</span></div>
     </div>
   </div>
 </section>
 
 <hr class="divider"/>
 
-<!-- HOW -->
+<!-- STEPS -->
 <section class="section wrap">
-  <p class="section-label">// <b>04</b> · from download to online in an evening</p>
+  <p class="section-label">// <b>03</b> · from download to online in an evening</p>
   <div class="steps">
     <div class="step reveal"><span class="n">STEP 01</span><h3>Open the file</h3><p>Double-click the HTML or serve it locally. It boots instantly with demo data so you see it live before you touch a thing.</p></div>
     <div class="step reveal"><span class="n">STEP 02</span><h3>Point it at your data</h3><p>Run the connector against your Obsidian vault or Notion. Set your name and greeting. It rebuilds the graph around you.</p></div>
@@ -260,20 +271,20 @@
 
 <!-- PRICING -->
 <section class="section wrap" id="pricing">
-  <p class="section-label">// <b>05</b> · pick your entry</p>
-  <h2 style="font-size:clamp(28px,4vw,44px);margin-bottom:8px">One payment. Yours to keep.</h2>
-  <p style="color:var(--ink-2);margin:0 0 40px">No subscription. Free updates as the system grows.</p>
+  <p class="section-label">// <b>04</b> · pick your entry</p>
+  <h2 style="font-size:clamp(30px,4.4vw,48px);margin-bottom:8px">One payment. Yours to keep.</h2>
+  <p style="color:var(--ink-2);margin:0 0 44px;font-size:18px">No subscription. Free updates as the system grows.</p>
   <div class="prices">
     <div class="price reveal">
       <span class="plan">The Template</span>
       <div class="amt">$47<small> once</small></div>
       <p class="desc">Everything downloads. You build it yourself with the guide.</p>
       <ul>
-        <li><svg width="16" height="16" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 6.5" stroke="#2ce3ff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Full command deck + pipelines</li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 6.5" stroke="#2ce3ff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Step-by-step build guide</li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 6.5" stroke="#2ce3ff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Free Discord access</li>
+        <li><span class="chk">✓</span>Full command deck + pipelines</li>
+        <li><span class="chk">✓</span>Step-by-step build guide</li>
+        <li><span class="chk">✓</span>Free Discord access</li>
       </ul>
-      <a class="btn btn-ghost" data-buy="template" href="#">Get the template</a>
+      <a class="btn btn-neu" data-buy="template" href="#">Get the template</a>
     </div>
     <div class="price feat reveal">
       <span class="badge">Most pick this</span>
@@ -281,10 +292,10 @@
       <div class="amt">$97<small> once</small></div>
       <p class="desc">The template plus a build-along cohort so you never get stuck.</p>
       <ul>
-        <li><svg width="16" height="16" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 6.5" stroke="#f5b13d" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Everything in The Template</li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 6.5" stroke="#f5b13d" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Private inner-circle channel</li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 6.5" stroke="#f5b13d" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Live build walkthroughs</li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 6.5" stroke="#f5b13d" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Get unstuck fast</li>
+        <li><span class="chk">✓</span>Everything in The Template</li>
+        <li><span class="chk">✓</span>Private inner-circle channel</li>
+        <li><span class="chk">✓</span>Live build walkthroughs</li>
+        <li><span class="chk">✓</span>Get unstuck fast</li>
       </ul>
       <a class="btn btn-primary" data-buy="buildalong" href="#">Join the build</a>
     </div>
@@ -293,15 +304,29 @@
       <div class="amt">$297<small> once</small></div>
       <p class="desc">I set it up on your machine, wired to your data, on a call.</p>
       <ul>
-        <li><svg width="16" height="16" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 6.5" stroke="#2ce3ff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Everything in Build-Along</li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 6.5" stroke="#2ce3ff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>1:1 setup call</li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 6.5" stroke="#2ce3ff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Connected to your vault + Notion</li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 6.5" stroke="#2ce3ff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Running before we hang up</li>
+        <li><span class="chk">✓</span>Everything in Build-Along</li>
+        <li><span class="chk">✓</span>1:1 setup call</li>
+        <li><span class="chk">✓</span>Connected to your vault + Notion</li>
+        <li><span class="chk">✓</span>Running before we hang up</li>
       </ul>
-      <a class="btn btn-ghost" data-buy="dfy" href="#">Book a setup</a>
+      <a class="btn btn-neu" data-buy="dfy" href="#">Book a setup</a>
     </div>
   </div>
   <p class="funnel-note">Not ready to buy? <a data-discord href="#">Join the Secret Society free</a> and watch it get built in real time.</p>
+</section>
+
+<hr class="divider"/>
+
+<!-- PROOF / TESTIMONIALS -->
+<section class="section wrap">
+  <p class="section-label">// <b>05</b> · you already watched it work</p>
+  <h2 style="font-size:clamp(28px,3.8vw,42px);max-width:22ch;margin-bottom:40px">Every time I posted the dashboard, the comments said the same thing.</h2>
+  <div class="tgrid">
+    <div class="tcard reveal"><div class="q">“bro how do I get this?? need it”</div><div class="who"><span class="av"></span><div><b>@—</b><div class="h">on the dashboard reel</div></div></div></div>
+    <div class="tcard reveal"><div class="q">“drop the template please 🙏 I'll pay”</div><div class="who"><span class="av"></span><div><b>@—</b><div class="h">on the SMS pipeline reel</div></div></div></div>
+    <div class="tcard reveal"><div class="q">“how'd you build the LENS thing, that's insane”</div><div class="who"><span class="av"></span><div><b>@—</b><div class="h">on the LENS reel</div></div></div></div>
+  </div>
+  <p style="color:var(--ink-2);margin-top:26px;max-width:52ch;font-size:16px">+ 90 more. So instead of answering one DM at a time — here's the whole build.</p>
 </section>
 
 <hr class="divider"/>
@@ -310,13 +335,13 @@
 <section class="section wrap">
   <p class="section-label">// <b>06</b> · is this you</p>
   <div class="forwho">
-    <div class="fw yes"><h3>BUILD THIS IF —</h3><ul>
+    <div class="fw yes"><h3>Build this if —</h3><ul>
       <li>You want an AI system you own, not another $20/mo app</li>
       <li>You keep notes in Obsidian or Notion and want them alive</li>
       <li>You'd rather copy-paste a working build than start from zero</li>
       <li>You're building a personal brand and want the receipts</li>
     </ul></div>
-    <div class="fw no"><h3>SKIP IT IF —</h3><ul>
+    <div class="fw no"><h3>Skip it if —</h3><ul>
       <li>You want a hosted app with a monthly login and nothing to run</li>
       <li>You won't open a terminal even once</li>
       <li>You're looking for a get-rich button, not a system to operate</li>
@@ -327,9 +352,9 @@
 <hr class="divider"/>
 
 <!-- FAQ -->
-<section class="section wrap">
+<section class="section wrap" id="faq">
   <p class="section-label">// <b>07</b> · straight answers</p>
-  <div class="faq" style="max-width:760px">
+  <div class="faq" style="max-width:800px">
     <details open><summary>Do I need to know how to code? <span class="plus">+</span></summary><p>No. If you can open a file and copy-paste commands from a guide, you can run this. The build-along tier exists for the moments you get stuck — so you never stay stuck.</p></details>
     <details><summary>Does it cost money to run? <span class="plus">+</span></summary><p>The system is a one-time purchase, yours forever. Voice is free in-browser, and you can wire it to free local models (Ollama) for zero API cost. If you'd rather use a cloud model, you pay that provider directly — no middle tax from me.</p></details>
     <details><summary>What data leaves my machine? <span class="plus">+</span></summary><p>It's local-first. Your notes stay on your laptop. It only reaches out to the specific APIs you choose to connect. No accounts, no telemetry.</p></details>
@@ -339,11 +364,11 @@
 </section>
 
 <!-- FOUNDER -->
-<section class="founder">
-  <div class="wrap section founder-in" style="padding-top:clamp(56px,8vw,96px);padding-bottom:clamp(56px,8vw,96px)">
+<section class="section wrap">
+  <div class="founder-in">
     <div class="badge-op">AF</div>
     <div>
-      <p class="meta">// OPERATOR · @andrekingfox · MINNEAPOLIS</p>
+      <p class="meta">Operator · @andrekingfox · Minneapolis</p>
       <p style="margin-top:14px">I'm 18, an IBEW electrician's apprentice, and I built this because I was tired of forgetting things that mattered. It started as one dark dashboard on top of my notes. Then it started texting me back, watching reels for me, running jobs overnight. People saw it in my videos and wanted in. So I cleaned it up and packaged the exact thing I use every single day. This isn't a course about AI — it's the machine, handed to you.</p>
       <p class="sig">— Andre Fox, building in public</p>
     </div>
@@ -353,186 +378,100 @@
 <!-- FINAL -->
 <section class="section wrap final">
   <span class="eyebrow" style="justify-content:center">System ready</span>
-  <h2 style="margin-top:18px">Stop watching mine.<br/>Boot your own.</h2>
+  <h2 style="margin-top:20px">Stop watching mine.<br/>Boot your own.</h2>
   <p class="sub">The build the comments have been asking for — yours in one download.</p>
   <div class="cta-row">
     <a class="btn btn-primary" data-buy="template" href="#">Get instant access — $47</a>
-    <a class="btn btn-ghost" data-discord href="#">Join the Secret Society (free)</a>
+    <a class="btn btn-neu" data-discord href="#">Join the Secret Society (free)</a>
   </div>
 </section>
 
 <footer>
   <div class="wrap foot-in">
-    <span><span data-brand>ANU</span> OS · built by @andrekingfox</span>
+    <span><b data-brand>ANU</b> · built by @andrekingfox</span>
     <span>local-first · no telemetry · yours forever</span>
   </div>
 </footer>
 </div>
 
 <script>
-  /* ================= EDIT THESE BEFORE GOING LIVE =================
-     Paste your real Gumroad product links here. With gumroad.js loaded
-     (see the tag at the bottom of this file), each button opens Gumroad's
-     secure checkout as an overlay ON this page. Without it, the button just
-     navigates to the product page — either way, checkout works.
-  ================================================================= */
+  /* ================= EDIT BEFORE GOING LIVE ================= */
   const GUMROAD = {
-    template:   "https://andrekingfox.gumroad.com/l/anu-template",    // $47
-    buildalong: "https://andrekingfox.gumroad.com/l/anu-buildalong",  // $97
-    dfy:        "https://andrekingfox.gumroad.com/l/anu-dfy",         // $297
+    template:   "https://andrekingfox.gumroad.com/l/anu-template",
+    buildalong: "https://andrekingfox.gumroad.com/l/anu-buildalong",
+    dfy:        "https://andrekingfox.gumroad.com/l/anu-dfy",
   };
   const DISCORD_URL = "https://discord.gg/hKkSgUZWeQ";
   const BRAND = "ANU";
-  // true = Gumroad checkout opens as an overlay ON this page (adds Gumroad's own button styling).
-  // false = your custom button navigates to the Gumroad checkout page (keeps your design). Both take payment.
-  const USE_OVERLAY = false;
+  const USE_OVERLAY = false; // true = Gumroad overlay on-page (adds Gumroad button styling)
+  /* ========================================================== */
 
   document.querySelectorAll("[data-brand]").forEach(function(el){ el.textContent = BRAND; });
   document.querySelectorAll("[data-discord]").forEach(function(el){ el.setAttribute("href", DISCORD_URL); });
   document.querySelectorAll("[data-buy]").forEach(function(el){
-    var url = GUMROAD[el.getAttribute("data-buy")] || "#";
-    el.setAttribute("href", url);
+    el.setAttribute("href", GUMROAD[el.getAttribute("data-buy")] || "#");
     if (USE_OVERLAY) el.classList.add("gumroad-button");
   });
 
-  (function(){
-    var el = document.querySelector("[data-clock]");
-    function tick(){ try { el.textContent = new Date().toLocaleTimeString("en-US",{hour12:false,timeZone:"America/Chicago"}); } catch(e){} }
-    tick(); setInterval(tick, 1000);
-  })();
-
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  /* scroll reveal */
   (function(){
     var els = document.querySelectorAll(".reveal");
-    if (reduce || !("IntersectionObserver" in window)) { els.forEach(function(e){ e.classList.add("in"); }); return; }
-    var io = new IntersectionObserver(function(en){ en.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target);} }); }, {threshold:.15});
+    if (reduce || !("IntersectionObserver" in window)){ els.forEach(function(e){e.classList.add("in");}); return; }
+    var io = new IntersectionObserver(function(en){ en.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target);} }); }, {threshold:.14});
     els.forEach(function(e){ io.observe(e); });
   })();
 
-  /* boot terminal */
+  /* CountUp stats */
   (function(){
-    var term = document.getElementById("term"); if(!term) return;
-    var lines = [
-      ['> booting ','c',BRAND,'',' core...'],
-      ['> mounting vault ..... ','ok','636 notes indexed'],
-      ['> sms pipeline ....... ','ok','online'],
-      ['> instagram lens ..... ','ok','online'],
-      ['> live loops ......... ','a','11 running'],
-      ['> voice: kokoro-82m .. ','ok','ready'],
-      ['> operator ........... ','a','you'],
-      ['> ','ok','system online.']
-    ];
-    function cls(t){ return t==='ok'?'ok':t==='c'?'c':t==='a'?'a':''; }
-    function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
-    function render(l){ var h='<div>'+esc(l[0]); h += l[3] ? '<span class="'+cls(l[1])+'">'+esc(l[2])+'</span><span class="'+cls(l[3])+'">'+esc(l[4]||'')+'</span>' : '<span class="'+cls(l[1])+'">'+esc(l[2])+'</span>'; return h+'</div>'; }
-    if (reduce){ term.innerHTML = lines.map(render).join(''); return; }
-    var i=0; (function next(){ if(i>=lines.length){ term.insertAdjacentHTML('beforeend','<span class="cursor"></span>'); return; } term.insertAdjacentHTML('beforeend', render(lines[i++])); setTimeout(next, 240+Math.random()*160); })();
+    function run(el){
+      var target = +el.getAttribute("data-count"); var suf = el.getAttribute("data-suffix") || "";
+      var span = el.querySelector("span"); if(!span) return;
+      if (reduce){ span.textContent = target; if(suf) el.insertAdjacentText("beforeend", suf); return; }
+      var t0=null, dur=1300;
+      function tick(ts){ t0=t0||ts; var p=Math.min(1,(ts-t0)/dur); var e=1-Math.pow(1-p,3);
+        span.textContent = Math.round(target*e); if(p<1) requestAnimationFrame(tick); else if(suf){ el.insertAdjacentText("beforeend", suf); } }
+      requestAnimationFrame(tick);
+    }
+    var seen=new WeakSet();
+    if(!("IntersectionObserver" in window)){ document.querySelectorAll("[data-count]").forEach(run); return; }
+    var io=new IntersectionObserver(function(en){ en.forEach(function(e){ if(e.isIntersecting && !seen.has(e.target)){ seen.add(e.target); run(e.target); io.unobserve(e.target);} }); },{threshold:.5});
+    document.querySelectorAll("[data-count]").forEach(function(e){ io.observe(e); });
   })();
 
-  /* ===== 3D neural brain (self-contained, no library) =====
-     Points on/inside a sphere, rotated in 3D and perspective-projected to 2D.
-     Depth drives size + alpha; near points connect. Mouse adds parallax. */
-  function brain3D(canvas, opts){
-    var ctx = canvas.getContext("2d");
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var W, H, cx, cy;
-    var isMobile = window.matchMedia("(max-width:640px)").matches;
-    var N = opts.count || (isMobile ? 90 : 190);
-    var R = opts.radius || 1;
-    var focal = 2.6;
-    var pts = [];
-    // fibonacci sphere shell + a few interior points for volume
-    for (var i=0;i<N;i++){
-      var y = 1 - (i/(N-1))*2;
-      var rad = Math.sqrt(Math.max(0,1-y*y));
-      var theta = i * 2.399963;
-      var shell = i % 4 !== 0;          // 75% on shell, 25% interior
-      var rr = shell ? 1 : (0.35 + Math.random()*0.6);
-      pts.push({ x: Math.cos(theta)*rad*rr, y: y*rr, z: Math.sin(theta)*rad*rr,
-                 warm: Math.random() < 0.16, s: Math.random()*1.1+0.8 });
-    }
-    var ay=0, ax=0, ty=0, tx=0, autoY=0;
-    function size(){
-      var r = canvas.getBoundingClientRect();
-      W=r.width; H=r.height; cx=W/2; cy=H/2;
-      canvas.width=W*dpr; canvas.height=H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
-    }
-    size();
-    var scale = Math.min(W,H) * 0.42;
-    function project(p, sy, cyr, sx, cxr){
-      // rotate around Y then X
-      var x1 = p.x*cyr + p.z*sy;
-      var z1 = -p.x*sy + p.z*cyr;
-      var y1 = p.y*cxr - z1*sx;
-      var z2 = p.y*sx + z1*cxr;
-      var pz = focal/(focal - z2);
-      return { X: cx + x1*scale*pz, Y: cy + y1*scale*pz, d: z2, pz: pz };
-    }
-    function frame(){
-      autoY += 0.0016;
-      ay += ((ty+autoY) - ay)*0.06; ax += (tx - ax)*0.06;
-      var sy=Math.sin(ay), cyr=Math.cos(ay), sx=Math.sin(ax), cxr=Math.cos(ax);
-      ctx.clearRect(0,0,W,H);
-      var pr = [];
-      for (var i=0;i<N;i++){ var q=project(pts[i],sy,cyr,sx,cxr); q.p=pts[i]; pr.push(q); }
-      pr.sort(function(a,b){ return a.d-b.d; }); // far first
-      // edges
-      for (var i=0;i<pr.length;i++){
-        var a=pr[i];
-        for (var j=i+1;j<pr.length;j++){
-          var b=pr[j];
-          var dx=a.p.x-b.p.x, dy=a.p.y-b.p.y, dz=a.p.z-b.p.z;
-          var dd=dx*dx+dy*dy+dz*dz;
-          if (dd < 0.16){
-            var al = (1 - dd/0.16) * 0.28 * ((a.d+b.d)/2 + 1.2)/2.4;
-            if (al>0.02){ ctx.strokeStyle="rgba(44,227,255,"+al.toFixed(3)+")"; ctx.lineWidth=0.6; ctx.beginPath(); ctx.moveTo(a.X,a.Y); ctx.lineTo(b.X,b.Y); ctx.stroke(); }
-          }
-        }
-      }
-      // nodes
-      for (var k=0;k<pr.length;k++){
-        var n=pr[k]; var depth=(n.d+1.4)/2.8; if(depth<0) depth=0;
-        var r = n.p.s * n.pz * (0.9+depth*1.4);
-        ctx.beginPath();
-        ctx.fillStyle = n.p.warm ? "rgba(245,177,61,"+(0.5+depth*0.5)+")" : "rgba(44,227,255,"+(0.4+depth*0.6)+")";
-        ctx.shadowBlur = 9*depth; ctx.shadowColor = n.p.warm ? "rgba(245,177,61,.6)":"rgba(44,227,255,.55)";
-        ctx.arc(n.X,n.Y,Math.max(0.4,r),0,6.283); ctx.fill(); ctx.shadowBlur=0;
-      }
-      if (!reduce) raf = requestAnimationFrame(frame);
-    }
-    var raf;
-    canvas.addEventListener("pointermove", function(e){
-      var r=canvas.getBoundingClientRect();
-      ty = ((e.clientX-r.left)/r.width - .5) * 1.4;
-      tx = ((e.clientY-r.top)/r.height - .5) * 0.9;
-    });
-    canvas.addEventListener("pointerleave", function(){ ty=0; tx=0; });
-    window.addEventListener("resize", function(){ size(); scale=Math.min(W,H)*0.42; });
-    frame();
-  }
-  var bc = document.getElementById("brain"); if (bc) brain3D(bc, {});
-
-  /* ambient 3D star/particle field */
+  /* ===== 3D neural brain — full-bleed background ===== */
   (function(){
-    var canvas=document.getElementById("bg3d"); if(!canvas) return;
-    var ctx=canvas.getContext("2d"), dpr=Math.min(window.devicePixelRatio||1,2), W,H;
-    function size(){ W=innerWidth; H=innerHeight; canvas.width=W*dpr; canvas.height=H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0); }
+    var canvas=document.getElementById("brain-bg"); if(!canvas) return;
+    var ctx=canvas.getContext("2d"); var dpr=Math.min(window.devicePixelRatio||1,2); var W,H,cx,cy,scale;
+    var isMobile=window.matchMedia("(max-width:640px)").matches;
+    var N=isMobile?90:200, focal=2.7, pts=[];
+    for(var i=0;i<N;i++){ var y=1-(i/(N-1))*2; var rad=Math.sqrt(Math.max(0,1-y*y)); var th=i*2.399963;
+      var rr=(i%4!==0)?1:(0.35+Math.random()*0.6);
+      pts.push({x:Math.cos(th)*rad*rr,y:y*rr,z:Math.sin(th)*rad*rr,warm:Math.random()<0.22,s:Math.random()*1.1+0.8}); }
+    var ay=0,ax=0,ty=0,tx=0,autoY=0;
+    function size(){ W=innerWidth;H=innerHeight;cx=W/2;cy=H*0.42;canvas.width=W*dpr;canvas.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);scale=Math.min(W,H)*0.46; }
     size();
-    var M = window.matchMedia("(max-width:640px)").matches ? 40 : 90;
-    var stars=[]; for(var i=0;i<M;i++){ stars.push({x:(Math.random()-.5)*2, y:(Math.random()-.5)*2, z:Math.random()*1+0.2, w:Math.random()<0.15}); }
-    var t=0;
     function frame(){
-      t+=0.0006; ctx.clearRect(0,0,W,H);
-      for(var i=0;i<M;i++){ var s=stars[i]; var a=t; var x=s.x*Math.cos(a)-s.z*Math.sin(a); var z=s.x*Math.sin(a)+s.z*Math.cos(a);
-        var pz=1.8/(1.8+z); var X=W/2+x*W*0.55*pz; var Y=H/2+s.y*H*0.55*pz;
-        ctx.beginPath(); ctx.fillStyle=s.w?"rgba(245,177,61,"+(0.25*pz)+")":"rgba(44,227,255,"+(0.3*pz)+")"; ctx.arc(X,Y,Math.max(0.3,1.4*pz),0,6.283); ctx.fill(); }
+      autoY+=0.0015; ay+=((ty+autoY)-ay)*0.05; ax+=(tx-ax)*0.05;
+      var sy=Math.sin(ay),cyr=Math.cos(ay),sx=Math.sin(ax),cxr=Math.cos(ax);
+      ctx.clearRect(0,0,W,H); var pr=[];
+      for(var i=0;i<N;i++){ var p=pts[i]; var x1=p.x*cyr+p.z*sy; var z1=-p.x*sy+p.z*cyr; var y1=p.y*cxr-z1*sx; var z2=p.y*sx+z1*cxr; var pz=focal/(focal-z2); pr.push({X:cx+x1*scale*pz,Y:cy+y1*scale*pz,d:z2,pz:pz,p:p}); }
+      pr.sort(function(a,b){return a.d-b.d;});
+      for(var i=0;i<pr.length;i++){ var a=pr[i];
+        for(var j=i+1;j<pr.length;j++){ var b=pr[j]; var dx=a.p.x-b.p.x,dy=a.p.y-b.p.y,dz=a.p.z-b.p.z; var dd=dx*dx+dy*dy+dz*dz;
+          if(dd<0.17){ var al=(1-dd/0.17)*0.34*((a.d+b.d)/2+1.2)/2.4; if(al>0.015){ ctx.strokeStyle="rgba(255,125,95,"+al.toFixed(3)+")"; ctx.lineWidth=0.7; ctx.beginPath(); ctx.moveTo(a.X,a.Y); ctx.lineTo(b.X,b.Y); ctx.stroke(); } } } }
+      for(var k=0;k<pr.length;k++){ var n=pr[k]; var depth=(n.d+1.4)/2.8; if(depth<0)depth=0; var r=n.p.s*n.pz*(1.0+depth*1.5);
+        ctx.beginPath(); ctx.fillStyle=n.p.warm?"rgba(255,196,160,"+(0.55+depth*0.45)+")":"rgba(255,107,82,"+(0.5+depth*0.5)+")";
+        ctx.shadowBlur=12*depth; ctx.shadowColor=n.p.warm?"rgba(255,150,110,.7)":"rgba(255,90,60,.6)";
+        ctx.arc(n.X,n.Y,Math.max(0.4,r),0,6.283); ctx.fill(); ctx.shadowBlur=0; }
       if(!reduce) requestAnimationFrame(frame);
     }
-    window.addEventListener("resize", size); frame();
+    window.addEventListener("pointermove",function(e){ ty=(e.clientX/innerWidth-.5)*1.1; tx=(e.clientY/innerHeight-.5)*0.7; });
+    window.addEventListener("resize",size);
+    frame();
   })();
 </script>
-<!-- Gumroad overlay checkout (works when this page is HOSTED; harmless if blocked) -->
 <script src="https://gumroad.com/js/gumroad.js"></script>
 </body>
 </html>
