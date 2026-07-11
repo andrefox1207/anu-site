@@ -4,6 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>ANU — Build your own JARVIS</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='9' fill='%23ff6b52'/%3E%3C/svg%3E"/>
 <meta name="description" content="Your own AI command center. One file, your data, runs on your machine. The dashboard 100+ people asked for."/>
 <meta property="og:title" content="ANU — Build your own JARVIS"/>
 <meta property="og:description" content="A self-hosted AI command center. Dashboard, pipelines, and agents that keep working while you sleep."/>
@@ -43,7 +44,7 @@
   :focus-visible{outline:2px solid var(--coral);outline-offset:3px;border-radius:4px;}
 
   /* full-bleed 3D brain background */
-  #brain-bg{position:fixed;inset:0;z-index:0;pointer-events:none;}
+  #brain-bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;}
   .bg-veil{position:fixed;inset:0;z-index:1;pointer-events:none;
     background:radial-gradient(72% 58% at 50% 36%, transparent 32%, rgba(10,11,14,.5) 88%),
                linear-gradient(180deg, rgba(10,11,14,.12) 0%, rgba(10,11,14,.42) 56%, var(--bg) 100%);}
@@ -85,7 +86,7 @@
 
   /* hero */
   .hero{text-align:center;padding-top:clamp(60px,10vw,120px);padding-bottom:clamp(30px,5vw,60px);}
-  .hero .eyebrow{justify-content:center;}
+  .hero .eyebrow{display:flex;flex-wrap:wrap;justify-content:center;text-align:center;max-width:100%;}
   .hero h1{font-size:clamp(44px,8vw,94px);font-weight:900;margin:22px auto 0;max-width:15ch;}
   .hero h1 .accent{background:linear-gradient(120deg,var(--coral-2),var(--coral));-webkit-background-clip:text;background-clip:text;color:transparent;}
   .hero .sub{color:var(--ink-2);font-size:clamp(17px,2.1vw,21px);max-width:56ch;margin:24px auto 0;font-weight:400;}
@@ -95,7 +96,8 @@
   /* stats */
   .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:clamp(48px,7vw,84px);}
   @media (max-width:720px){ .stats{grid-template-columns:repeat(2,1fr);gap:14px;} }
-  .stat{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:26px 20px;box-shadow:var(--nsh);}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:26px 20px;box-shadow:var(--nsh);min-width:0;}
+  @media (max-width:720px){ .stat{padding:20px 16px;} }
   .stat .num{font-size:clamp(30px,4vw,44px);font-weight:800;letter-spacing:-.04em;color:#fff;font-variant-numeric:tabular-nums;}
   .stat .num .u{color:var(--coral);}
   .stat .lbl{font-size:13px;color:var(--ink-2);margin-top:6px;font-weight:500;}
