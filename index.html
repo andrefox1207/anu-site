@@ -351,7 +351,7 @@
         <li><span class="chk">✓</span>Connected to your vault + Notion</li>
         <li><span class="chk">✓</span>Running before we hang up</li>
       </ul>
-      <a class="btn btn-neu" data-buy="dfy" href="#">Book a setup</a>
+      <a class="btn btn-neu" data-book href="book/">Book a setup</a>
     </div>
   </div>
   <p class="funnel-note">Not ready to buy? <a data-discord href="#">Join the Secret Society free</a> and watch it get built in real time.</p>
@@ -501,6 +501,7 @@
   /* ---- CTA + funnel event tracking ---- */
   document.querySelectorAll("[data-buy]").forEach(function(el){ el.addEventListener("click", function(){ track("begin_checkout", { tier: el.getAttribute("data-buy"), variant: variant }); }); });
   document.querySelectorAll("[data-discord]").forEach(function(el){ el.addEventListener("click", function(){ track("discord_join", { variant: variant }); }); });
+  document.querySelectorAll("[data-book]").forEach(function(el){ el.addEventListener("click", function(){ track("book_call", { variant: variant }); }); });
   document.querySelectorAll(".faq details").forEach(function(d){ d.addEventListener("toggle", function(){ if (d.open) track("faq_open"); }); });
   (function(){ var seen={}; [25,50,75,100].forEach(function(x){seen[x]=false;});
     window.addEventListener("scroll", function(){ var p = Math.round((scrollY+innerHeight)/document.body.scrollHeight*100);
