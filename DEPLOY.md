@@ -1,52 +1,41 @@
-# Deploy the ANU site (live, with working checkout)
+# Deploy & configure the ANU site
 
-The site is `index.html` — one self-contained file. The 3D hero needs no server,
-but **checkout needs the page hosted on a real host** (Gumroad's script can't run
-from a `file://` or inside a Claude Artifact). GitHub Pages is free and takes ~5 min.
+The site is **live** at **https://andrefox1207.github.io/anu-site/** (GitHub Pages, free).
+It's one `index.html` + `/assets` (the demo video + poster) + `sitemap.xml` + `robots.txt`.
 
-## Step 1 — Put your real Gumroad links in
-Open `index.html`, find the config block near the bottom `<script>`:
-
+## The one config block (top of the `<script>` in `index.html`)
 ```js
 const GUMROAD = {
-  template:   "https://andrekingfox.gumroad.com/l/anu-template",    // $47
-  buildalong: "https://andrekingfox.gumroad.com/l/anu-buildalong",  // $97
-  dfy:        "https://andrekingfox.gumroad.com/l/anu-dfy",         // $297
+  template:   "https://andrekingfox.gumroad.com/l/anu-template",   // ← your real URLs
+  buildalong: "https://andrekingfox.gumroad.com/l/anu-buildalong",
+  dfy:        "https://andrekingfox.gumroad.com/l/anu-dfy",
 };
-const DISCORD_URL = "https://discord.gg/hKkSgUZWeQ";
-const USE_OVERLAY = false;   // true = checkout opens as an overlay ON the page
+const DISCORD_URL     = "https://discord.gg/hKkSgUZWeQ";
+const BRAND           = "ANU";
+const USE_OVERLAY     = false;   // true = Gumroad checkout opens as an on-page overlay
+const EMAIL_ENDPOINT  = "";      // paste a Formspree URL to turn the waitlist live
+const PLAUSIBLE_DOMAIN = "";     // paste your Plausible domain to turn analytics on
 ```
+Change anything here → `git push` → Pages redeploys in ~1 min.
 
-Replace the three URLs with your actual Gumroad product links (you get these after
-you publish each product). `USE_OVERLAY = false` keeps your button design and sends
-buyers to Gumroad's checkout page. Flip to `true` if you want the checkout to pop
-up as an overlay without leaving the page (it will use Gumroad's button styling).
-
-## Step 2 — Host it free on GitHub Pages
+## Redeploy after an edit
 ```bash
 cd /Users/andrefox/TRADING/anu-site
-git init && git add index.html && git commit -m "ANU site"
-gh repo create anu-site --public --source=. --push     # needs the gh CLI, already installed
-gh api -X POST repos/andrefox1207/anu-site/pages -f source.branch=main -f source.path=/  # enable Pages
+git add -A && git commit -m "update" && git push
 ```
-Your site is live at: `https://andrefox1207.github.io/anu-site/`
-(Give it ~1 minute the first time.)
 
-Prefer clicking? On github.com: new repo → upload `index.html` → Settings → Pages →
-Source: `main` / root → Save.
+## Turn on the extras (optional, free tiers)
+- **Waitlist:** create a form at formspree.io, paste its `https://formspree.io/f/xxxx` URL into `EMAIL_ENDPOINT`. Until then the form shows a friendly "you're on the list" and just fires an analytics event.
+- **Analytics + A/B readout:** add the site as a domain in Plausible, paste the domain into `PLAUSIBLE_DOMAIN`. Events already wired: page + variant, CTA clicks, `begin_checkout`, `discord_join`, `faq_open`, scroll depth, `video_play`, `waitlist_submit`.
+- **A/B:** the hero headline auto-splits `?v=a` ("Build your own JARVIS.") vs `?v=b` ("Steal what works."), sticky per visitor, attributed in analytics. Force a variant with `?v=a` / `?v=b`.
 
-## Step 3 — Point your bio at it
-Put `https://andrefox1207.github.io/anu-site/` on `link.me/andrekingfox` (or buy a
-custom domain later and point it here). That's your funnel destination.
+## Hard truths
+- **Must stay hosted.** The Gumroad script, Google Fonts, Lenis, and analytics are external — they run on Pages/Vercel/Netlify but **not inside a Claude Artifact** (CSP blocks external scripts). A Claude preview is a stripped fallback; the checkout-working site is this hosted file.
+- **Buttons degrade gracefully:** if `gumroad.js` fails, CTAs still navigate to the product page.
+
+## The demo video (free)
+`assets/demo.mp4` + `.webm` + `demo-poster.jpg` are a real screen-recording of ANU LENS. To regenerate a slicker version later, you *could* use the Motion MCP (`mcp.motion.so`) — brief: *"30s product demo of ANU LENS: paste a reel, it scores the hook, chat returns hooks; dark UI, coral accent, no voiceover."* — but that spends credits and is **unfunded/optional**. The current demo ships free.
 
 ## Alternatives to GitHub Pages
-- **Netlify Drop** — drag the folder onto app.netlify.com/drop. Instant, free.
-- **Vercel** — `npx vercel` in this folder.
-- **Gumroad only** — skip hosting entirely and just send people to your Gumroad
-  product pages. Less slick, zero setup. The site is what makes it premium.
-
-## What's already handled
-- The 3D neural-brain hero (self-contained, mobile-safe, respects reduced-motion)
-- Live boot terminal, HUD frame, scroll reveals
-- All copy, pricing tiers, FAQ, founder note
-- `gumroad.js` is already included for overlay checkout
+- **Netlify Drop:** drag this folder onto app.netlify.com/drop.
+- **Vercel:** `npx vercel` in this folder.
