@@ -7,6 +7,17 @@
 <meta name="description" content="Your own AI command center. One file, your data, runs on your machine. The dashboard 100+ people asked for."/>
 <meta property="og:title" content="ANU — Build your own JARVIS"/>
 <meta property="og:description" content="A self-hosted AI command center. Dashboard, pipelines, and agents that keep working while you sleep."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://andrefox1207.github.io/anu-site/"/>
+<meta property="og:image" content="https://andrefox1207.github.io/anu-site/assets/demo-poster.jpg"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="ANU — Build your own JARVIS"/>
+<meta name="twitter:description" content="Your own local AI Instagram-intel tool. Free to run, nothing leaves your machine."/>
+<meta name="twitter:image" content="https://andrefox1207.github.io/anu-site/assets/demo-poster.jpg"/>
+<link rel="canonical" href="https://andrefox1207.github.io/anu-site/"/>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Product","name":"ANU LENS","description":"A 100% local, free-to-run Instagram-intelligence tool for creators. Analyze reels, rank what's working, and chat with a local AI grounded in your library.","brand":{"@type":"Brand","name":"ANU"},"offers":[{"@type":"Offer","name":"The Template","price":"47","priceCurrency":"USD","availability":"https://schema.org/InStock"},{"@type":"Offer","name":"Build-Along","price":"97","priceCurrency":"USD","availability":"https://schema.org/InStock"},{"@type":"Offer","name":"Done-For-You","price":"297","priceCurrency":"USD","availability":"https://schema.org/InStock"}]}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
@@ -94,6 +105,21 @@
   .marquee-track{display:flex;gap:52px;width:max-content;animation:scroll 26s linear infinite;}
   .marquee span{font-size:16px;font-weight:600;color:var(--ink-2);letter-spacing:.01em;white-space:nowrap;display:inline-flex;align-items:center;gap:52px;}
   .marquee span::after{content:"◇";color:var(--coral);opacity:.6;}
+
+  /* demo video */
+  .demo-wrap{position:relative;border:1px solid var(--line);border-radius:22px;overflow:hidden;background:var(--panel);box-shadow:0 30px 80px rgba(0,0,0,.45);}
+  .demo-wrap video,.demo-wrap img.poster{display:block;width:100%;height:auto;}
+  .demo-badge{position:absolute;top:16px;left:16px;z-index:2;font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--coral);background:rgba(10,11,14,.7);border:1px solid var(--coral-soft);padding:6px 12px;border-radius:8px;backdrop-filter:blur(6px);}
+  .demo-cap{color:var(--ink-3);font-size:13px;text-align:center;margin-top:14px;font-weight:500;}
+
+  /* waitlist */
+  .waitlist{border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg,rgba(255,107,82,.05),var(--panel));padding:clamp(28px,5vw,44px);text-align:center;}
+  .waitlist h3{font-size:clamp(22px,3vw,30px);font-weight:800;letter-spacing:-.03em;}
+  .waitlist p{color:var(--ink-2);margin:10px auto 22px;max-width:46ch;}
+  .wl-form{display:flex;gap:10px;max-width:460px;margin:0 auto;flex-wrap:wrap;}
+  .wl-form input{flex:1;min-width:200px;background:var(--bg-2);border:1px solid var(--line-2);color:var(--ink);border-radius:12px;padding:14px 16px;font-family:inherit;font-size:15px;}
+  .wl-msg{margin-top:12px;font-size:13.5px;font-weight:600;min-height:18px;}
+  .wl-msg.ok{color:var(--good);} .wl-msg.err{color:var(--bad);}
   @keyframes scroll{to{transform:translateX(-50%);}}
 
   /* cards */
@@ -196,9 +222,9 @@
 
 <!-- HERO -->
 <section class="hero wrap">
-  <span class="eyebrow">Meet ANU · self-hosted AI command center</span>
+  <span class="eyebrow">Meet ANU LENS · local Instagram intelligence</span>
   <h1>Build your own <span class="accent">JARVIS.</span></h1>
-  <p class="sub">One file. Your data. Runs on your machine. The AI second brain <b style="color:var(--ink)">100+ of you</b> asked me to hand over — a dashboard, pipelines, and agents that keep working while you sleep.</p>
+  <p class="sub">Paste any reel — a model on <b style="color:var(--ink)">your machine</b> reads it and hands you the hook, the structure, and what to steal. The tool <b style="color:var(--ink)">100+ of you</b> asked me to hand over. Free to run, nothing leaves your laptop.</p>
   <div class="cta-row">
     <a class="btn btn-primary" data-buy="template" href="#pricing">Get instant access — $47</a>
     <a class="btn btn-neu" data-discord href="#">Join the Secret Society (free)</a>
@@ -221,16 +247,30 @@
   </div>
 </div>
 
+<!-- SEE IT WORK (free demo) -->
+<section class="section wrap">
+  <p class="section-label">// <b>01</b> · see it work</p>
+  <h2 style="font-size:clamp(28px,3.8vw,44px);max-width:18ch;margin-bottom:26px">Not slides. The real tool, running.</h2>
+  <div class="demo-wrap reveal">
+    <span class="demo-badge">ANU LENS · live</span>
+    <video id="demo" muted loop playsinline preload="none" poster="assets/demo-poster.jpg" aria-label="ANU LENS walkthrough: analyze a reel, rank the hooks, chat with your library">
+      <source src="assets/demo.webm" type="video/webm"/>
+      <source src="assets/demo.mp4" type="video/mp4"/>
+    </video>
+  </div>
+  <p class="demo-cap">Paste a reel → it scores the hook and hands you what to steal → chat with your whole library. All local, no API keys.</p>
+</section>
+
 <!-- FEATURES -->
 <section class="section wrap" id="features">
-  <p class="section-label">// <b>01</b> · what's in the box</p>
-  <h2 style="font-size:clamp(30px,4.4vw,50px);max-width:16ch;margin-bottom:16px">The four systems from the videos — all yours.</h2>
-  <p style="color:var(--ink-2);max-width:56ch;margin:0 0 44px;font-size:18px">Not a course full of theory. The actual working software, plus the walkthrough to make it yours.</p>
+  <p class="section-label">// <b>02</b> · what's inside</p>
+  <h2 style="font-size:clamp(30px,4.4vw,50px);max-width:18ch;margin-bottom:16px">Three tools. One local app. Zero cost to run.</h2>
+  <p style="color:var(--ink-2);max-width:56ch;margin:0 0 44px;font-size:18px">Not a course full of theory — the actual working software, plus the walkthrough to make it yours.</p>
   <div class="grid-2">
-    <div class="card reveal"><div class="ic">◉</div><span class="k">Command Deck</span><h3>The dark dashboard</h3><p>A 3D graph of everything you know — notes, tasks, priorities — with a HUD, an AI chat dock, and free in-browser voice. Single HTML file, no build step.</p></div>
-    <div class="card reveal"><div class="ic">✉</div><span class="k">SMS Pipeline</span><h3>Text it, it files itself</h3><p>Send a link or a thought by text. It transcribes, summarizes, researches, and drops the result into your knowledge base — 24/7, untouched.</p></div>
-    <div class="card reveal"><div class="ic">▤</div><span class="k">Instagram LENS</span><h3>Reels → intel</h3><p>Feed it reels in your niche. It downloads, transcribes, and watches them frame-by-frame, then hands you the hooks and moves worth stealing.</p></div>
-    <div class="card reveal"><div class="ic">↻</div><span class="k">Live Loops</span><h3>Agents that don't clock out</h3><p>Background workers that run on a schedule — research, outreach drafts, daily briefs — so your system produces while you're on the job or asleep.</p></div>
+    <div class="card reveal"><div class="ic">▤</div><span class="k">LENS</span><h3>Reels → intel</h3><p>Paste any reel. It downloads, transcribes, and reads it with a model on your machine — then hands you the hook, the structure, why it holds, and exactly what to steal, scored out of 100.</p></div>
+    <div class="card reveal"><div class="ic">◉</div><span class="k">Dashboard</span><h3>What's working, ranked</h3><p>Every reel you've analyzed, sorted by how strong and replicable it is. Filter by niche, and pull hooks from a searchable database of what actually performs.</p></div>
+    <div class="card reveal"><div class="ic">✦</div><span class="k">Chat</span><h3>Ask your library</h3><p>A local AI that answers only from the reels you've analyzed. "Give me 5 hooks for a reel about X." Free, offline, grounded in what's proven to work.</p></div>
+    <div class="card reveal"><div class="ic">⊘</div><span class="k">Local &amp; free</span><h3>Nothing leaves your laptop</h3><p>Runs on Ollama + Whisper + yt-dlp — no API keys, no subscription, no cloud tax. Your data stays yours. It just works, offline.</p></div>
   </div>
 </section>
 
@@ -238,19 +278,19 @@
 
 <!-- INCLUDED -->
 <section class="section wrap">
-  <p class="section-label">// <b>02</b> · everything you download</p>
+  <p class="section-label">// <b>03</b> · everything you download</p>
   <div style="display:grid;grid-template-columns:.85fr 1.15fr;gap:clamp(24px,4vw,56px)">
     <div>
       <h2 style="font-size:clamp(28px,3.8vw,42px)">Local-first.<br/>No accounts. No cloud tax.</h2>
-      <p style="color:var(--ink-2);margin-top:18px;max-width:40ch;font-size:17px">It runs on your laptop and talks only to the APIs you choose. Your notes never leave your machine.</p>
+      <p style="color:var(--ink-2);margin-top:18px;max-width:40ch;font-size:17px">It runs on your laptop with a local model. No accounts, no keys — your reels and notes never leave your machine.</p>
     </div>
     <div class="incl">
-      <div class="row"><span class="chk">✓</span><span><b>The full command deck</b> — one <span class="mono">.html</span> file, sample data baked in so it demos instantly.</span></div>
-      <div class="row"><span class="chk">✓</span><span><b>Vault connector</b> — point it at your Obsidian or Notion and it rebuilds the graph from your real knowledge.</span></div>
-      <div class="row"><span class="chk">✓</span><span><b>The SMS pipeline</b> — scripts + the launch setup that keeps it running in the background.</span></div>
-      <div class="row"><span class="chk">✓</span><span><b>Local brain option</b> — wire it to free local models (Ollama) so it runs with zero API keys.</span></div>
-      <div class="row"><span class="chk">✓</span><span><b>Free voice</b> — Kokoro-82M speaks in-browser, unlimited, with a built-in fallback.</span></div>
-      <div class="row"><span class="chk">✓</span><span><b>The build guide</b> — step-by-step video + docs. If you can copy-paste, you can run this.</span></div>
+      <div class="row"><span class="chk">✓</span><span><b>The full ANU LENS app</b> — the dashboard, the analyzer, and the chat, ready to run locally.</span></div>
+      <div class="row"><span class="chk">✓</span><span><b>The local engine</b> — reel download, transcription, and hook-scoring, all on your machine.</span></div>
+      <div class="row"><span class="chk">✓</span><span><b>Grounded chat</b> — a local AI that answers only from the reels you've analyzed.</span></div>
+      <div class="row"><span class="chk">✓</span><span><b>Zero-API-key setup</b> — one script installs the free stack (Ollama, Whisper, yt-dlp).</span></div>
+      <div class="row"><span class="chk">✓</span><span><b>One-click launch</b> — open it, paste a reel, done. No build step.</span></div>
+      <div class="row"><span class="chk">✓</span><span><b>The setup guide</b> — step-by-step. If you can copy-paste, you can run this.</span></div>
     </div>
   </div>
 </section>
@@ -259,11 +299,11 @@
 
 <!-- STEPS -->
 <section class="section wrap">
-  <p class="section-label">// <b>03</b> · from download to online in an evening</p>
+  <p class="section-label">// <b>04</b> · running in one evening</p>
   <div class="steps">
-    <div class="step reveal"><span class="n">STEP 01</span><h3>Open the file</h3><p>Double-click the HTML or serve it locally. It boots instantly with demo data so you see it live before you touch a thing.</p></div>
-    <div class="step reveal"><span class="n">STEP 02</span><h3>Point it at your data</h3><p>Run the connector against your Obsidian vault or Notion. Set your name and greeting. It rebuilds the graph around you.</p></div>
-    <div class="step reveal"><span class="n">STEP 03</span><h3>Turn on the loops</h3><p>Flip on the SMS pipeline, LENS, and the background agents. Close the laptop — the system keeps working.</p></div>
+    <div class="step reveal"><span class="n">STEP 01</span><h3>Run one script</h3><p>The setup script installs the free stack — Ollama, Whisper, yt-dlp. No API keys, no accounts. Then one command starts it.</p></div>
+    <div class="step reveal"><span class="n">STEP 02</span><h3>Paste a reel</h3><p>Drop in any Instagram reel in your niche. ANU downloads it, transcribes it, and reads it — and scores the hook out of 100.</p></div>
+    <div class="step reveal"><span class="n">STEP 03</span><h3>Steal what works</h3><p>Watch your dashboard fill with ranked hooks, then ask the chat for hooks and scripts grounded in your library.</p></div>
   </div>
 </section>
 
@@ -271,7 +311,7 @@
 
 <!-- PRICING -->
 <section class="section wrap" id="pricing">
-  <p class="section-label">// <b>04</b> · pick your entry</p>
+  <p class="section-label">// <b>05</b> · pick your entry</p>
   <h2 style="font-size:clamp(30px,4.4vw,48px);margin-bottom:8px">One payment. Yours to keep.</h2>
   <p style="color:var(--ink-2);margin:0 0 44px;font-size:18px">No subscription. Free updates as the system grows.</p>
   <div class="prices">
@@ -319,7 +359,7 @@
 
 <!-- PROOF / TESTIMONIALS -->
 <section class="section wrap">
-  <p class="section-label">// <b>05</b> · you already watched it work</p>
+  <p class="section-label">// <b>06</b> · you already watched it work</p>
   <h2 style="font-size:clamp(28px,3.8vw,42px);max-width:22ch;margin-bottom:40px">Every time I posted the dashboard, the comments said the same thing.</h2>
   <div class="tgrid">
     <div class="tcard reveal"><div class="q">“bro how do I get this?? need it”</div><div class="who"><span class="av"></span><div><b>@—</b><div class="h">on the dashboard reel</div></div></div></div>
@@ -333,7 +373,7 @@
 
 <!-- FOR WHO -->
 <section class="section wrap">
-  <p class="section-label">// <b>06</b> · is this you</p>
+  <p class="section-label">// <b>07</b> · is this you</p>
   <div class="forwho">
     <div class="fw yes"><h3>Build this if —</h3><ul>
       <li>You want an AI system you own, not another $20/mo app</li>
@@ -353,7 +393,7 @@
 
 <!-- FAQ -->
 <section class="section wrap" id="faq">
-  <p class="section-label">// <b>07</b> · straight answers</p>
+  <p class="section-label">// <b>08</b> · straight answers</p>
   <div class="faq" style="max-width:800px">
     <details open><summary>Do I need to know how to code? <span class="plus">+</span></summary><p>No. If you can open a file and copy-paste commands from a guide, you can run this. The build-along tier exists for the moments you get stuck — so you never stay stuck.</p></details>
     <details><summary>Does it cost money to run? <span class="plus">+</span></summary><p>The system is a one-time purchase, yours forever. Voice is free in-browser, and you can wire it to free local models (Ollama) for zero API cost. If you'd rather use a cloud model, you pay that provider directly — no middle tax from me.</p></details>
@@ -372,6 +412,19 @@
       <p style="margin-top:14px">I'm 18, an IBEW electrician's apprentice, and I built this because I was tired of forgetting things that mattered. It started as one dark dashboard on top of my notes. Then it started texting me back, watching reels for me, running jobs overnight. People saw it in my videos and wanted in. So I cleaned it up and packaged the exact thing I use every single day. This isn't a course about AI — it's the machine, handed to you.</p>
       <p class="sig">— Andre Fox, building in public</p>
     </div>
+  </div>
+</section>
+
+<!-- WAITLIST -->
+<section class="section wrap" style="padding-top:0">
+  <div class="waitlist reveal">
+    <h3>Not ready to buy?</h3>
+    <p>Drop your email — I'll send you a free hook teardown and tell you the moment ANU LENS drops a new update.</p>
+    <form class="wl-form" id="wl-form" novalidate>
+      <input id="wl-email" type="email" inputmode="email" autocomplete="email" placeholder="you@email.com" aria-label="Your email"/>
+      <button class="btn" type="submit">Notify me</button>
+    </form>
+    <div class="wl-msg" id="wl-msg" role="status" aria-live="polite"></div>
   </div>
 </section>
 
@@ -403,7 +456,9 @@
   };
   const DISCORD_URL = "https://discord.gg/hKkSgUZWeQ";
   const BRAND = "ANU";
-  const USE_OVERLAY = false; // true = Gumroad overlay on-page (adds Gumroad button styling)
+  const USE_OVERLAY = false;          // true = Gumroad overlay on-page (adds Gumroad button styling)
+  const EMAIL_ENDPOINT = "";          // paste your Formspree URL (https://formspree.io/f/xxxx) to enable the waitlist
+  const PLAUSIBLE_DOMAIN = "";        // paste your Plausible domain to enable privacy-first analytics (optional)
   /* ========================================================== */
 
   document.querySelectorAll("[data-brand]").forEach(function(el){ el.textContent = BRAND; });
@@ -414,6 +469,67 @@
   });
 
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---- analytics (privacy-first, optional) + event helper ---- */
+  if (PLAUSIBLE_DOMAIN) {
+    var ps = document.createElement("script");
+    ps.defer = true; ps.setAttribute("data-domain", PLAUSIBLE_DOMAIN);
+    ps.src = "https://plausible.io/js/script.tagged-events.js";
+    document.head.appendChild(ps);
+    window.plausible = window.plausible || function(){ (window.plausible.q = window.plausible.q || []).push(arguments); };
+  }
+  function track(ev, props){ try{ if (window.plausible) window.plausible(ev, props?{props:props}:undefined); }catch(e){} }
+
+  /* ---- A/B variant flag (?v=a|b, cookie-sticky) — Level 3 seam ---- */
+  var variant = (function(){
+    var m = location.search.match(/[?&]v=(a|b)/i);
+    var v = m ? m[1].toLowerCase() : (document.cookie.match(/anu_v=(a|b)/)||[])[1];
+    if (!v){ v = (Date.now() % 2 === 0) ? "a" : "b"; }   // stable within a load; seed only, not crypto
+    document.cookie = "anu_v="+v+";path=/;max-age=2592000;samesite=lax";
+    document.documentElement.setAttribute("data-v", v);
+    return v;
+  })();
+  // Variant B: sharper, benefit-first headline. personalize(context) seam left for L5.
+  if (variant === "b") {
+    var h1 = document.querySelector(".hero h1");
+    if (h1) h1.innerHTML = 'Steal what <span class="accent">works.</span>';
+  }
+  track("pageview_variant", { variant: variant });
+
+  /* ---- CTA + funnel event tracking ---- */
+  document.querySelectorAll("[data-buy]").forEach(function(el){ el.addEventListener("click", function(){ track("begin_checkout", { tier: el.getAttribute("data-buy"), variant: variant }); }); });
+  document.querySelectorAll("[data-discord]").forEach(function(el){ el.addEventListener("click", function(){ track("discord_join", { variant: variant }); }); });
+  document.querySelectorAll(".faq details").forEach(function(d){ d.addEventListener("toggle", function(){ if (d.open) track("faq_open"); }); });
+  (function(){ var seen={}; [25,50,75,100].forEach(function(x){seen[x]=false;});
+    window.addEventListener("scroll", function(){ var p = Math.round((scrollY+innerHeight)/document.body.scrollHeight*100);
+      [25,50,75,100].forEach(function(x){ if(!seen[x] && p>=x){ seen[x]=true; track("scroll_depth", {pct:x}); } }); }, {passive:true}); })();
+
+  /* ---- waitlist (Formspree endpoint, or graceful notice) ---- */
+  (function(){
+    var f=document.getElementById("wl-form"), msg=document.getElementById("wl-msg"); if(!f) return;
+    f.addEventListener("submit", function(e){
+      e.preventDefault();
+      var email=(document.getElementById("wl-email").value||"").trim();
+      if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ msg.textContent="Enter a valid email."; msg.className="wl-msg err"; return; }
+      track("waitlist_submit", { variant: variant });
+      if(!EMAIL_ENDPOINT){ msg.textContent="Thanks — you're on the list."; msg.className="wl-msg ok"; f.reset(); return; }
+      msg.textContent="Sending…"; msg.className="wl-msg";
+      fetch(EMAIL_ENDPOINT, {method:"POST", headers:{"Accept":"application/json","Content-Type":"application/json"},
+        body: JSON.stringify({email:email, variant:variant, ref:document.referrer, utm:location.search})})
+        .then(function(r){ if(r.ok){ msg.textContent="You're in. Check your inbox."; msg.className="wl-msg ok"; f.reset(); }
+          else { msg.textContent="Something went wrong — try again."; msg.className="wl-msg err"; } })
+        .catch(function(){ msg.textContent="Network error — try again."; msg.className="wl-msg err"; });
+    });
+  })();
+
+  /* ---- demo video: play only in-view + silent, poster otherwise ---- */
+  (function(){
+    var v=document.getElementById("demo"); if(!v) return;
+    if(reduce || !("IntersectionObserver" in window)) return; // poster stays
+    var io=new IntersectionObserver(function(en){ en.forEach(function(e){
+      if(e.isIntersecting){ v.play().then(function(){track("video_play");}).catch(function(){}); } else { v.pause(); } }); }, {threshold:.4});
+    io.observe(v);
+  })();
 
   /* scroll reveal */
   (function(){
@@ -472,6 +588,16 @@
     frame();
   })();
 </script>
+<!-- Gumroad overlay checkout (hosted only; harmless if blocked) -->
 <script src="https://gumroad.com/js/gumroad.js"></script>
+<!-- Lenis smooth scroll (premium feel, INP-safe; skipped under reduced-motion) -->
+<script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
+<script>
+  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && window.Lenis) {
+    var lenis = new Lenis({ duration: 1.1, smoothWheel: true, touchMultiplier: 1.6 });
+    function _raf(t){ lenis.raf(t); requestAnimationFrame(_raf); }
+    requestAnimationFrame(_raf);
+  }
+</script>
 </body>
 </html>

@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://andrefox1207.github.io/anu-site/sitemap.xml
