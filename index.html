@@ -17,7 +17,7 @@
 <meta name="twitter:image" content="https://andrefox1207.github.io/anu-site/assets/demo-poster.jpg"/>
 <link rel="canonical" href="https://andrefox1207.github.io/anu-site/"/>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Product","name":"ANU LENS","description":"A 100% local, free-to-run Instagram-intelligence tool for creators. Analyze reels, rank what's working, and chat with a local AI grounded in your library.","brand":{"@type":"Brand","name":"ANU"},"offers":[{"@type":"Offer","name":"The Template","price":"47","priceCurrency":"USD","availability":"https://schema.org/InStock"},{"@type":"Offer","name":"Build-Along","price":"97","priceCurrency":"USD","availability":"https://schema.org/InStock"},{"@type":"Offer","name":"Done-For-You","price":"297","priceCurrency":"USD","availability":"https://schema.org/InStock"}]}
+{"@context":"https://schema.org","@type":"Product","name":"ANU LENS","description":"A 100% local, free-to-run Instagram-intelligence tool for creators. Analyze reels, rank what's working, and chat with a local AI grounded in your library.","brand":{"@type":"Brand","name":"ANU"},"offers":{"@type":"Offer","name":"The Template","price":"47","priceCurrency":"USD","availability":"https://schema.org/InStock","url":"https://foxyandre.gumroad.com/l/anu-template"}}
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -346,45 +346,23 @@
 
 <!-- PRICING -->
 <section class="section wrap" id="pricing">
-  <p class="section-label">// <b>05</b> · pick your entry</p>
+  <p class="section-label">// <b>05</b> · get access</p>
   <h2 style="font-size:clamp(30px,4.4vw,48px);margin-bottom:8px">One payment. Yours to keep.</h2>
   <p style="color:var(--ink-2);margin:0 0 44px;font-size:18px">No subscription. Free updates as the system grows.</p>
-  <div class="prices">
-    <div class="price reveal">
+  <div class="prices" style="grid-template-columns:minmax(0,430px);justify-content:center">
+    <div class="price feat reveal">
+      <span class="badge">Full access</span>
       <span class="plan">The Template</span>
       <div class="amt">$47<small> once</small></div>
-      <p class="desc">Everything downloads. You build it yourself with the guide.</p>
+      <p class="desc">The complete ANU LENS app, downloaded to your machine — plus the guide to make it yours.</p>
       <ul>
-        <li><span class="chk">✓</span>Full command deck + pipelines</li>
+        <li><span class="chk">✓</span>The full LENS app — analyzer, dashboard &amp; chat</li>
+        <li><span class="chk">✓</span>Zero-API-key setup script (Ollama, Whisper, yt-dlp)</li>
         <li><span class="chk">✓</span>Step-by-step build guide</li>
+        <li><span class="chk">✓</span>Free updates as the system grows</li>
         <li><span class="chk">✓</span>Free Discord access</li>
       </ul>
-      <a class="btn btn-neu" data-buy="template" href="#">Get the template</a>
-    </div>
-    <div class="price feat reveal">
-      <span class="badge">Most pick this</span>
-      <span class="plan">Build-Along</span>
-      <div class="amt">$97<small> once</small></div>
-      <p class="desc">The template plus a build-along cohort so you never get stuck.</p>
-      <ul>
-        <li><span class="chk">✓</span>Everything in The Template</li>
-        <li><span class="chk">✓</span>Private inner-circle channel</li>
-        <li><span class="chk">✓</span>Live build walkthroughs</li>
-        <li><span class="chk">✓</span>Get unstuck fast</li>
-      </ul>
-      <a class="btn btn-primary" data-buy="buildalong" href="#">Join the build</a>
-    </div>
-    <div class="price reveal">
-      <span class="plan">Done-For-You</span>
-      <div class="amt">$297<small> once</small></div>
-      <p class="desc">I set it up on your machine, wired to your data, on a call.</p>
-      <ul>
-        <li><span class="chk">✓</span>Everything in Build-Along</li>
-        <li><span class="chk">✓</span>1:1 setup call</li>
-        <li><span class="chk">✓</span>Connected to your vault + Notion</li>
-        <li><span class="chk">✓</span>Running before we hang up</li>
-      </ul>
-      <a class="btn btn-neu" data-book href="book/">Book a setup</a>
+      <a class="btn btn-primary" data-buy="template" href="#">Get instant access — $47</a>
     </div>
   </div>
   <p class="funnel-note">Not ready to buy? <a data-discord href="#">Join the Secret Society free</a> and watch it get built in real time.</p>
@@ -481,9 +459,7 @@
 <script>
   /* ================= EDIT BEFORE GOING LIVE ================= */
   const GUMROAD = {
-    template:   "https://andrekingfox.gumroad.com/l/anu-template",
-    buildalong: "https://andrekingfox.gumroad.com/l/anu-buildalong",
-    dfy:        "https://andrekingfox.gumroad.com/l/anu-dfy",
+    template:   "https://foxyandre.gumroad.com/l/anu-template",
   };
   const DISCORD_URL = "https://discord.gg/hKkSgUZWeQ";
   const BRAND = "ANU";
