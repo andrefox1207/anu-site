@@ -64,6 +64,9 @@ img,video{max-width:100%;display:block;}
 .glow.c{width:38vw;height:38vw;left:30vw;top:130vh;background:radial-gradient(circle,rgba(226,73,44,.08),transparent 60%);}
 .grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.5;mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");}
+/* digital-brain orb — the one continuous ambient layer (fades in on load) */
+#brain-bg{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity 1.2s ease .15s;}
+#brain-bg.on{opacity:.7;}
 .scan{position:fixed;inset:0;z-index:0;pointer-events:none;
   background-image:linear-gradient(rgba(255,255,255,.028) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.028) 1px,transparent 1px);
   background-size:56px 56px;
@@ -339,6 +342,7 @@ body.pv-lock{overflow:hidden;}
   <div class="glow b" data-p=".22"></div>
   <div class="glow c" data-p=".08"></div>
 </div>
+<canvas id="brain-bg" aria-hidden="true"></canvas>
 <div class="scan"></div>
 <div class="grain"></div>
 
@@ -671,6 +675,55 @@ if(finePointer&&!reduceM){
     document.documentElement.style.setProperty("--my",e.clientY+"px");
   },{passive:true});
 }
+
+/* ---------- digital-brain orb (ported from a55773b, alphas x0.55, visibility-aware) ---------- */
+(function(){
+  const canvas=document.getElementById("brain-bg"); if(!canvas)return;
+  const ctx=canvas.getContext("2d"),dpr=Math.min(devicePixelRatio||1,2);
+  const isMobile=matchMedia("(max-width:640px)").matches;
+  const N=isMobile?90:200,focal=2.7,pts=[];
+  for(let i=0;i<N;i++){ const y=1-(i/(N-1))*2,rad=Math.sqrt(Math.max(0,1-y*y)),th=i*2.399963;
+    const rr=(i%4!==0)?1:(0.35+Math.random()*0.6);
+    pts.push({x:Math.cos(th)*rad*rr,y:y*rr,z:Math.sin(th)*rad*rr,warm:Math.random()<0.22,s:Math.random()*1.1+0.8}); }
+  // Link pairs are rotation-invariant — precompute ONCE (the a55773b original re-scanned O(N²) every frame)
+  const pairs=[];
+  for(let i=0;i<N;i++)for(let j=i+1;j<N;j++){
+    const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,dz=pts[i].z-pts[j].z,dd=dx*dx+dy*dy+dz*dz;
+    if(dd<0.17)pairs.push({i,j,base:(1-dd/0.17)*0.19});
+  }
+  let W,H,cx,cy,scale,ay=0,ax=0,ty=0,tx=0,autoY=0,raf=null;
+  const pr=new Array(N);
+  function size(){ W=innerWidth;H=innerHeight;cx=W/2;cy=H*0.42;canvas.width=W*dpr;canvas.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);scale=Math.min(W,H)*0.46; }
+  size();
+  function frame(){
+    autoY+=0.0015; ay+=((ty+autoY)-ay)*0.05; ax+=(tx-ax)*0.05;
+    const sy=Math.sin(ay),cyr=Math.cos(ay),sx=Math.sin(ax),cxr=Math.cos(ax);
+    ctx.clearRect(0,0,W,H);
+    for(let i=0;i<N;i++){ const p=pts[i],x1=p.x*cyr+p.z*sy,z1=-p.x*sy+p.z*cyr,y1=p.y*cxr-z1*sx,z2=p.y*sx+z1*cxr,pz=focal/(focal-z2);
+      pr[i]={X:cx+x1*scale*pz,Y:cy+y1*scale*pz,d:z2,pz,p}; }
+    ctx.lineWidth=0.7;
+    for(let k=0;k<pairs.length;k++){ const pp=pairs[k],a=pr[pp.i],b=pr[pp.j];
+      const al=pp.base*((a.d+b.d)/2+1.2)/2.4;
+      if(al>0.012){ ctx.strokeStyle=`rgba(255,125,95,${al.toFixed(3)})`;
+        ctx.beginPath(); ctx.moveTo(a.X,a.Y); ctx.lineTo(b.X,b.Y); ctx.stroke(); } }
+    for(let k=0;k<N;k++){ const n=pr[k]; let depth=(n.d+1.4)/2.8; if(depth<0)depth=0;
+      const r=Math.max(0.4,n.p.s*n.pz*(1.0+depth*1.5));
+      // two-pass soft glow instead of shadowBlur (shadowBlur was the frame killer)
+      if(depth>0.35){ ctx.beginPath();
+        ctx.fillStyle=n.p.warm?`rgba(255,150,110,${(depth*0.10).toFixed(3)})`:`rgba(255,90,60,${(depth*0.09).toFixed(3)})`;
+        ctx.arc(n.X,n.Y,r*2.6,0,6.283); ctx.fill(); }
+      ctx.beginPath();
+      ctx.fillStyle=n.p.warm?`rgba(255,196,160,${(0.30+depth*0.25).toFixed(3)})`:`rgba(255,107,82,${(0.28+depth*0.28).toFixed(3)})`;
+      ctx.arc(n.X,n.Y,r,0,6.283); ctx.fill(); }
+    if(!reduceM&&!document.hidden) raf=requestAnimationFrame(frame); else raf=null;
+  }
+  canvas.classList.add("on");
+  if(reduceM){ frame(); return; } // one static frame, no loop
+  if(finePointer) addEventListener("pointermove",e=>{ ty=(e.clientX/innerWidth-.5)*1.1; tx=(e.clientY/innerHeight-.5)*0.7; },{passive:true});
+  addEventListener("resize",size);
+  document.addEventListener("visibilitychange",()=>{ if(!document.hidden&&!raf) raf=requestAnimationFrame(frame); });
+  raf=requestAnimationFrame(frame);
+})();
 
 /* ---------- parallax glow field ---------- */
 if(!reduceM){
