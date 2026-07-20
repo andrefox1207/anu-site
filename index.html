@@ -41,7 +41,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;background:var(--bg);}
-html,body{overflow-x:hidden;overscroll-behavior-y:none;}
+html,body{overflow-x:clip;overscroll-behavior-y:none;} /* clip, not hidden — hidden breaks position:sticky */
 body{
   background:var(--bg);color:var(--ink);font-family:var(--sans);
   font-size:16px;line-height:1.6;letter-spacing:-.01em;
@@ -166,8 +166,52 @@ h2{font-family:var(--disp);font-weight:800;font-size:clamp(30px,4.4vw,54px);lett
 .demo-badge{position:absolute;top:16px;left:16px;z-index:2;background:rgba(8,9,12,.7);backdrop-filter:blur(8px);border:1px solid var(--line-2);color:var(--coral);font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;padding:7px 13px;border-radius:999px;}
 .demo-cap{color:var(--ink-3);font-size:14px;margin-top:14px;font-family:var(--mono);letter-spacing:.02em;}
 
+/* ---------- product story: pinned scrollytelling ---------- */
+.story-track{height:340vh;position:relative;}
+.story-stage{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.story-head{position:absolute;top:12vh;left:0;right:0;text-align:left;}
+.rail{position:absolute;left:clamp(16px,3vw,44px);top:50%;transform:translateY(-50%);height:min(46vh,420px);width:2px;background:var(--line);}
+.rail .rp{position:absolute;left:0;top:0;width:2px;height:0;background:var(--coral);box-shadow:0 0 12px rgba(255,107,82,.6);}
+.rail .rl{position:absolute;left:14px;font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--ink-3);transition:color .3s;white-space:nowrap;}
+.rail .rl.on{color:var(--coral);}
+.rail .rl[data-b="0"]{top:-2px}.rail .rl[data-b="1"]{top:32%}.rail .rl[data-b="2"]{top:64%}.rail .rl[data-b="3"]{bottom:-2px}
+.beats{position:relative;width:min(600px,88vw);height:min(60vh,520px);}
+.beat{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;opacity:0;pointer-events:none;will-change:transform,opacity;}
+.panel{background:linear-gradient(180deg,#14151d,#101118);border:1px solid var(--line-2);border-radius:24px;box-shadow:0 50px 120px rgba(0,0,0,.6);}
+.p-eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.22em;color:var(--coral);}
+.input-card{width:min(560px,86vw);padding:30px 34px;display:flex;flex-direction:column;gap:16px;}
+.urlline{font-family:var(--mono);font-size:clamp(15px,2vw,19px);color:var(--ink);min-height:1.5em;display:flex;align-items:center;}
+.caret{width:9px;height:1.25em;background:var(--coral);margin-left:3px;animation:pulse 1.1s steps(2) infinite;}
+.p-hint{color:var(--ink-3);font-size:13.5px;}
+.score-panel{width:min(520px,86vw);padding:30px 34px 26px;}
+.score-panel .sc-num b{font-family:var(--disp);font-size:72px;font-weight:800;letter-spacing:-.04em;line-height:1;color:#fff;}
+.score-panel .sc-bar i{width:0;transition:none;}
+.srow{opacity:0;transform:translateY(10px);transition:opacity .4s var(--ease),transform .4s var(--ease);}
+.srow.on{opacity:1;transform:none;}
+.lib-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:min(560px,86vw);}
+.mini{background:var(--panel);border:1px solid var(--line-2);border-radius:16px;padding:16px 14px;display:flex;flex-direction:column;gap:4px;will-change:transform,opacity;}
+.mini b{font-family:var(--disp);font-size:28px;font-weight:800;color:#fff;}
+.mini[data-s="92"] b,.mini[data-s="91"] b{color:var(--coral);}
+.mini span{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--ink-3);text-transform:uppercase;}
+.lib-cap{font-family:var(--mono);font-size:12.5px;color:var(--ink-3);letter-spacing:.06em;}
+.plan-line{font-family:var(--disp);font-size:clamp(26px,3.4vw,40px);font-weight:800;letter-spacing:-.03em;}
+.plan-card{width:min(560px,86vw);padding:26px 30px;display:flex;flex-direction:column;gap:12px;text-align:left;}
+.plan-idea{font-size:17px;color:var(--ink);font-weight:500;}
+.plan-meta{display:flex;gap:18px;font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;color:var(--ink-3);text-transform:uppercase;}
+.story-static{display:none;padding-block:clamp(72px,11vh,130px);}
+.ss-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:36px;}
+.ss-grid .panel{padding:22px 24px;display:flex;flex-direction:column;gap:10px;}
+.ss-grid p{color:var(--ink-2);font-size:15px;}
+@media (max-width:960px),(prefers-reduced-motion:reduce){
+  .story-track{display:none;}
+  .story-static{display:block;}
+}
+@media (max-width:640px){ .ss-grid{grid-template-columns:1fr;} }
+
 /* feature cards */
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:42px;}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:42px;}
+@media (max-width:960px){ .grid3{grid-template-columns:1fr;} }
 .card{background:linear-gradient(180deg,var(--panel),#0e0f16);border:1px solid var(--line);border-radius:20px;padding:30px 30px 28px;position:relative;overflow:hidden;transition:border-color .25s;}
 .card:hover{border-color:var(--line-2);}
 .card .ic{width:46px;height:46px;border-radius:13px;background:var(--coral-soft);color:var(--coral);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:20px;border:1px solid rgba(255,107,82,.22);}
@@ -225,14 +269,6 @@ h2{font-family:var(--disp);font-weight:800;font-size:clamp(30px,4.4vw,54px);lett
 .founder p.body{margin-top:14px;color:var(--ink-2);font-size:16.5px;max-width:70ch;}
 .founder .sig{margin-top:16px;font-family:var(--disp);font-weight:700;color:var(--ink);}
 
-/* waitlist */
-.waitlist{border:1px solid var(--line-2);border-radius:24px;padding:clamp(28px,4vw,44px);background:linear-gradient(180deg,rgba(255,107,82,.05),var(--panel));text-align:center;}
-.waitlist h3{font-family:var(--disp);font-size:26px;font-weight:800;letter-spacing:-.02em;}
-.waitlist p{color:var(--ink-2);margin-top:10px;font-size:15.5px;}
-.wl-form{display:flex;gap:10px;justify-content:center;margin-top:22px;flex-wrap:wrap;}
-.wl-form input{background:var(--bg-2);border:1px solid var(--line-2);color:var(--ink);border-radius:13px;padding:14px 18px;font-size:15px;font-family:var(--sans);width:min(340px,100%);outline:none;transition:border-color .2s;}
-.wl-form input:focus{border-color:var(--coral);}
-.wl-msg{margin-top:12px;font-size:14px;color:var(--good);min-height:20px;}
 
 /* final */
 .final{text-align:center;padding-bottom:clamp(80px,12vh,140px);}
@@ -358,31 +394,89 @@ body.pv-lock{overflow:hidden;}
   </div>
 </div>
 
-<!-- ================= DEMO ================= -->
-<section class="section wrap" id="demo">
-  <p class="slab">// <b>01</b> · see it work</p>
-  <h2 class="reveal" style="max-width:18ch">Not slides. The real tool, running.</h2>
-  <div class="demo tilt" data-tilt data-tilt-soft>
-    <div class="glare"></div>
-    <span class="demo-badge">ANU LENS · LIVE</span>
-    <video id="demovid" muted loop playsinline preload="none" poster="assets/demo-poster.jpg" aria-label="ANU LENS walkthrough">
-      <source src="assets/demo.webm" type="video/webm"/>
-      <source src="assets/demo.mp4" type="video/mp4"/>
-    </video>
+<!-- ================= PRODUCT STORY (pinned scrollytelling) ================= -->
+<section class="story" id="demo" aria-label="How ANU LENS works">
+  <div class="story-track" id="story-track">
+    <div class="story-stage">
+      <div class="wrap story-head">
+        <p class="slab">// <b>01</b> · watch it work</p>
+        <h2 style="max-width:16ch">One reel in. A plan out.</h2>
+      </div>
+      <div class="rail" aria-hidden="true">
+        <i class="rp" id="rail-fill"></i>
+        <span class="rl" data-b="0">PASTE</span>
+        <span class="rl" data-b="1">SCORE</span>
+        <span class="rl" data-b="2">RANK</span>
+        <span class="rl" data-b="3">PLAN</span>
+      </div>
+      <div class="beats">
+        <!-- BEAT 1 · PASTE -->
+        <div class="beat" id="b0">
+          <div class="panel input-card">
+            <span class="p-eyebrow">ANU LENS</span>
+            <div class="urlline"><span id="typed"></span><i class="caret"></i></div>
+            <span class="p-hint">paste any reel in your niche</span>
+          </div>
+        </div>
+        <!-- BEAT 2 · SCORE -->
+        <div class="beat" id="b1">
+          <div class="panel score-panel">
+            <div class="sc-row"><span class="sc-pill">REEL ANALYSIS</span><span class="sc-live">live</span></div>
+            <div class="sc-k">HOOK SCORE</div>
+            <div class="sc-num"><b id="story-score">0</b><span>/ 100</span></div>
+            <div class="sc-bar"><i id="story-bar"></i></div>
+            <div class="sc-t srow" data-r="0"><span class="k">Type</span><span>Pattern interrupt</span></div>
+            <div class="sc-t srow" data-r="1"><span class="k">Structure</span><span>Problem → proof → CTA</span></div>
+            <div class="sc-t srow" data-r="2"><span class="k">Steal</span><span><span class="c">Open on the result</span>, not the setup</span></div>
+          </div>
+        </div>
+        <!-- BEAT 3 · RANK -->
+        <div class="beat" id="b2">
+          <div class="lib-grid" id="lib-grid">
+            <div class="mini" data-s="92"><b>92</b><span>pattern interrupt</span></div>
+            <div class="mini" data-s="91"><b>91</b><span>open on result</span></div>
+            <div class="mini" data-s="88"><b>88</b><span>silent demo</span></div>
+            <div class="mini" data-s="84"><b>84</b><span>text-overlay story</span></div>
+            <div class="mini" data-s="81"><b>81</b><span>hard cut opener</span></div>
+            <div class="mini" data-s="77"><b>77</b><span>voiceover build</span></div>
+          </div>
+          <p class="lib-cap">your library, ranked by what's replicable</p>
+        </div>
+        <!-- BEAT 4 · PLAN -->
+        <div class="beat" id="b3">
+          <h3 class="plan-line">Your next post, <span style="color:var(--coral)">planned.</span></h3>
+          <div class="panel plan-card">
+            <span class="p-eyebrow">STRATEGY · NEXT UP</span>
+            <p class="plan-idea">“Open on the finished dashboard — 0.8s — then cut to you: ‘I built this instead of doomscrolling.’”</p>
+            <div class="plan-meta"><span>hook: pattern interrupt</span><span>format: silent demo</span></div>
+          </div>
+          <a class="btn btn-primary" data-app data-mag href="#">Start free — no card</a>
+        </div>
+      </div>
+    </div>
   </div>
-  <p class="demo-cap">paste a reel → hook scored /100 → steal what works → chat with your whole library</p>
+  <!-- static fallback (mobile / reduced motion) -->
+  <div class="story-static wrap">
+    <p class="slab">// <b>01</b> · watch it work</p>
+    <h2 style="max-width:16ch">One reel in. A plan out.</h2>
+    <div class="ss-grid">
+      <div class="panel"><span class="p-eyebrow">01 · PASTE</span><p>Drop any reel link into ANU.</p></div>
+      <div class="panel"><span class="p-eyebrow">02 · SCORE</span><p>The hook gets read and scored /100 — type, structure, what to steal.</p></div>
+      <div class="panel"><span class="p-eyebrow">03 · RANK</span><p>Your library sorts itself by what's strong and replicable.</p></div>
+      <div class="panel"><span class="p-eyebrow">04 · PLAN</span><p>Strategy hands you the next post: hook, format, script angle.</p></div>
+    </div>
+  </div>
 </section>
 
 <!-- ================= FEATURES ================= -->
 <section class="section wrap" id="system">
   <p class="slab">// <b>02</b> · what's inside</p>
-  <h2 class="reveal" style="max-width:16ch">Four tools. One app. Free to start.</h2>
+  <h2 class="reveal" style="max-width:16ch">Three tools. One app. Free to start.</h2>
   <p class="lead">Not a course full of theory — working software, in your browser, one sign-in away.</p>
-  <div class="grid2">
-    <div class="card tilt" data-tilt><div class="glare"></div><div class="ic">▤</div><span class="k">Lens</span><h3>Reels → intel</h3><p>Paste any reel. ANU transcribes and reads it — then hands you the hook, the structure, why it holds, and exactly what to steal, scored out of 100.</p></div>
-    <div class="card tilt" data-tilt><div class="glare"></div><div class="ic">◉</div><span class="k">Library</span><h3>What's working, ranked</h3><p>Every reel you've analyzed, sorted by how strong and replicable it is. Filter by niche, and pull hooks from a searchable database of what actually performs.</p></div>
-    <div class="card tilt" data-tilt><div class="glare"></div><div class="ic">✦</div><span class="k">Chat</span><h3>Ask your library</h3><p>An AI that answers only from the reels you've analyzed. “Give me 5 hooks for a reel about X.” Grounded in what's proven to work, not generic advice.</p></div>
-    <div class="card tilt" data-tilt><div class="glare"></div><div class="ic">⚡</div><span class="k">Strategy</span><h3>Your next post, planned</h3><p>ANU reads your creator profile + your top reels and returns the exact hooks to use and videos to make. Your plan updates as your library grows.</p></div>
+  <div class="grid3">
+    <div class="card"><div class="ic">▤</div><span class="k">Lens</span><h3>Reels → intel</h3><p>Paste any reel. ANU transcribes and reads it — then hands you the hook, the structure, why it holds, and exactly what to steal, scored out of 100.</p></div>
+    <div class="card"><div class="ic">◉</div><span class="k">Library</span><h3>Ranked — and it talks back</h3><p>Every reel you've analyzed, sorted by how replicable it is. Ask it anything: “give me 5 hooks for a reel about X” — answers grounded only in what's proven.</p></div>
+    <div class="card"><div class="ic">⚡</div><span class="k">Strategy</span><h3>Your next post, planned</h3><p>ANU reads your creator profile + your top reels and returns the exact hooks to use and videos to make. Your plan updates as your library grows.</p></div>
   </div>
 </section>
 
@@ -427,7 +521,7 @@ body.pv-lock{overflow:hidden;}
 <section class="section wrap">
   <p class="slab">// <b>06</b> · is this you</p>
   <div class="forwho">
-    <div class="fw yes tilt" data-tilt><div class="glare"></div><h3>Use this if —</h3><ul>
+    <div class="fw yes"><h3>Use this if —</h3><ul>
       <li>You post (or want to post) short-form and guess at what works</li>
       <li>You save reels “for inspiration” and never look at them again</li>
       <li>You want a system that learns your niche, not generic AI advice</li>
@@ -456,7 +550,7 @@ body.pv-lock{overflow:hidden;}
 
 <!-- ================= FOUNDER ================= -->
 <section class="section wrap">
-  <div class="founder tilt" data-tilt data-tilt-soft>
+  <div class="founder">
     <div class="glare"></div>
     <div class="badge-op">AF</div>
     <div>
@@ -464,19 +558,6 @@ body.pv-lock{overflow:hidden;}
       <p class="body">I'm 18, an IBEW electrician's apprentice, and I built this because I was tired of forgetting things that mattered. It started as one dark dashboard on top of my notes. Then it started texting me back, watching reels for me, running jobs overnight. People saw it in my videos and wanted in. So I cleaned it up and made it something you can just sign into. This isn't a course about AI — it's the machine, opened up.</p>
       <p class="sig">— Andre Fox, building in public</p>
     </div>
-  </div>
-</section>
-
-<!-- ================= WAITLIST ================= -->
-<section class="section wrap" style="padding-top:0">
-  <div class="waitlist">
-    <h3>Not ready to sign up?</h3>
-    <p>Drop your email — I'll send you a free hook teardown and tell you the moment ANU ships something new.</p>
-    <form class="wl-form" id="wl-form" novalidate>
-      <input id="wl-email" type="email" inputmode="email" autocomplete="email" placeholder="you@email.com" aria-label="Your email"/>
-      <button class="btn btn-primary" data-mag type="submit">Notify me</button>
-    </form>
-    <div class="wl-msg" id="wl-msg" role="status" aria-live="polite"></div>
   </div>
 </section>
 
@@ -496,7 +577,7 @@ body.pv-lock{overflow:hidden;}
 
 <footer>
   <div class="wrap foot-in">
-    <span><b style="color:var(--ink-2)">ANU</b> · built by @andrekingfox</span>
+    <span><b style="color:var(--ink-2)">ANU</b> · built by @andrekingfox · <a data-discord href="#">Secret Society (free Discord)</a></span>
     <span><a href="https://anu-app.vercel.app/privacy">Privacy</a> · <a href="https://anu-app.vercel.app/terms">Terms</a> · <a href="https://anu-app.vercel.app/data-deletion">Data deletion</a></span>
     <span>free to start · your data, exportable &amp; deletable · cancel anytime</span>
   </div>
@@ -550,7 +631,6 @@ const APP_URL   ="https://anu-app.vercel.app";
 const BUY_URL   ="https://buy.stripe.com/bJe3cu8wh2gW26r2Ef6wE00"; // Stripe Payment Link (Pro)
 const PRO_PRICE ="$47.99";
 const DISCORD_URL ="https://discord.gg/hKkSgUZWeQ";
-const EMAIL_ENDPOINT ="";       // Formspree URL to enable the waitlist
 const PLAUSIBLE_DOMAIN ="";     // Plausible domain for privacy-first analytics
 /* ========================================== */
 
@@ -645,31 +725,48 @@ if(finePointer&&!reduceM){
   
 })();
 
-/* ---------- demo video: play when visible ---------- */
+/* ---------- product story: pinned scrollytelling (PASTE / SCORE / RANK / PLAN) ---------- */
 (function(){
-  const v=document.getElementById("demovid"); if(!v)return;
-  new IntersectionObserver(es=>es.forEach(e=>{ e.isIntersecting?v.play().catch(()=>{}):v.pause(); }),{threshold:.35}).observe(v);
+  const track=document.getElementById("story-track"); if(!track)return;
+  if(reduceM||matchMedia("(max-width:960px)").matches)return; // CSS shows the static fallback
+  const beats=[0,1,2,3].map(i=>document.getElementById("b"+i));
+  const rail=document.getElementById("rail-fill"),labels=$$(".rail .rl");
+  const typed=document.getElementById("typed"),URLSTR="instagram.com/reel/DKf3xQ2m1";
+  const score=document.getElementById("story-score"),bar=document.getElementById("story-bar");
+  const rows=$$(".srow"),minis=$$("#lib-grid .mini");
+  const cl=(v,a,b)=>Math.max(0,Math.min(1,(v-a)/(b-a)));
+  let p=0,running=false,raf=null;
+  function loop(){
+    if(!running){ raf=null; return; }
+    const r=track.getBoundingClientRect();
+    const target=Math.max(0,Math.min(1,-r.top/(r.height-innerHeight)));
+    p+=(target-p)*0.07; if(Math.abs(target-p)<.0004)p=target;
+    rail.style.height=(p*100)+"%";
+    const bi=p<.25?0:p<.55?1:p<.8?2:3;
+    labels.forEach((l,i)=>l.classList.toggle("on",i===bi));
+    const o0=cl(p,0,.04)*(1-cl(p,.21,.26));
+    const o1=cl(p,.25,.30)*(1-cl(p,.51,.56));
+    const o2=cl(p,.55,.60)*(1-cl(p,.76,.81));
+    const o3=cl(p,.80,.86);
+    beats[0].style.opacity=o0; beats[0].style.transform=`translate3d(0,${(1-o0)*30}px,0)`;
+    beats[1].style.opacity=o1; beats[1].style.transform=`perspective(1200px) rotateY(${90*(1-cl(p,.25,.33))}deg)`;
+    beats[2].style.opacity=o2; beats[2].style.transform=`translate3d(0,${(1-o2)*30}px,0)`;
+    beats[3].style.opacity=o3; beats[3].style.transform=`translate3d(0,${(1-o3)*30}px,0)`;
+    typed.textContent=URLSTR.slice(0,Math.round(cl(p,.03,.20)*URLSTR.length));
+    const sv=Math.round(92*cl(p,.30,.48));
+    score.textContent=sv; bar.style.width=sv+"%";
+    rows.forEach((el,i)=>el.classList.toggle("on",p>.40+i*.05));
+    minis.forEach((m,i)=>{ const mo=cl(p,.55+i*.028,.62+i*.028);
+      m.style.opacity=mo; m.style.transform=`translate3d(0,${(1-mo)*22}px,0) scale(${.92+.08*mo})`; });
+    raf=requestAnimationFrame(loop);
+  }
+  new IntersectionObserver(es=>es.forEach(e=>{ running=e.isIntersecting; if(running&&!raf)raf=requestAnimationFrame(loop); }))
+    .observe(track);
 })();
 
 /* ---------- FAQ tracking ---------- */
 $$(".faq details").forEach(d=>d.addEventListener("toggle",()=>{ if(d.open)track("faq_open"); }));
 
-/* ---------- waitlist ---------- */
-(function(){
-  const f=document.getElementById("wl-form"),msg=document.getElementById("wl-msg");
-  f.addEventListener("submit",async e=>{
-    e.preventDefault();
-    const email=document.getElementById("wl-email").value.trim();
-    if(!email.includes("@")){ msg.style.color="var(--coral)"; msg.textContent="enter a valid email"; return; }
-    if(!EMAIL_ENDPOINT){ msg.style.color="var(--good)"; msg.textContent="✓ noted — the waitlist opens soon, DM @andrekingfox meanwhile"; return; }
-    try{
-      const r=await fetch(EMAIL_ENDPOINT,{method:"POST",headers:{Accept:"application/json","Content-Type":"application/json"},body:JSON.stringify({email})});
-      msg.style.color=r.ok?"var(--good)":"var(--coral)";
-      msg.textContent=r.ok?"✓ you're on the list":"something broke — try again";
-      if(r.ok)track("waitlist_join");
-    }catch(_){ msg.style.color="var(--coral)"; msg.textContent="something broke — try again"; }
-  });
-})();
 
 /* ---------- PRICING VIEW: hash-routed, same page ---------- */
 (function(){
