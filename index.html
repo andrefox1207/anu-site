@@ -159,7 +159,7 @@ nav.links a.btn-primary{color:#fff;} /* beat nav.links a's gray — this was the
 @keyframes mq{to{transform:translateX(-50%);}}
 
 /* ---------- sections ---------- */
-.section{padding:clamp(72px,11vh,130px) 0;}
+.section{padding-block:clamp(72px,11vh,130px);} /* longhand — the `X 0` shorthand was zeroing .wrap's side gutters */
 .slab{font-family:var(--mono);font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--coral);margin-bottom:18px;}
 .slab b{color:var(--ink-3);font-weight:400;}
 h2{font-family:var(--disp);font-weight:800;font-size:clamp(30px,4.4vw,54px);letter-spacing:-.03em;line-height:1.05;}
