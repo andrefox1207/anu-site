@@ -75,6 +75,14 @@ img,video{max-width:100%;display:block;}
 }
 .scan::after{content:"";position:absolute;inset:0;
   background:radial-gradient(240px 240px at var(--mx) var(--my),rgba(255,107,82,.10),transparent 70%);}
+.scan{transition:opacity .5s ease;}
+.scan.dim{opacity:0;} /* cursor inside the orb → grid yields to the visualization */
+/* always-on grid patch in the top-left corner (pairs with glow.a) */
+.scan-tl{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.028) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.028) 1px,transparent 1px);
+  background-size:56px 56px;
+  -webkit-mask-image:radial-gradient(340px 300px at 8% 6%,#000 0%,rgba(0,0,0,.3) 55%,transparent 80%);
+          mask-image:radial-gradient(340px 300px at 8% 6%,#000 0%,rgba(0,0,0,.3) 55%,transparent 80%);}
 main{position:relative;z-index:2;}
 
 /* ---------- nav ---------- */
@@ -343,6 +351,7 @@ body.pv-lock{overflow:hidden;}
   <div class="glow c" data-p=".08"></div>
 </div>
 <canvas id="brain-bg" aria-hidden="true"></canvas>
+<div class="scan-tl" aria-hidden="true"></div>
 <div class="scan"></div>
 <div class="grain"></div>
 
@@ -670,9 +679,13 @@ addEventListener("scroll",()=>{
 
 /* ---------- cursor scanner ---------- */
 if(finePointer&&!reduceM){
+  const scanEl=document.querySelector(".scan");
   addEventListener("pointermove",e=>{
     document.documentElement.style.setProperty("--mx",e.clientX+"px");
     document.documentElement.style.setProperty("--my",e.clientY+"px");
+    // grid yields to the orb: fade while the cursor is inside the sphere's disc (x1.1 grace)
+    const R=Math.min(innerWidth,innerHeight)*0.46*1.1,dx=e.clientX-innerWidth/2,dy=e.clientY-innerHeight*0.42;
+    scanEl.classList.toggle("dim",dx*dx+dy*dy<R*R);
   },{passive:true});
 }
 
