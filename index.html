@@ -40,8 +40,8 @@
   --mx:50vw; --my:40vh;               /* cursor scanner position */
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
-html,body{overflow-x:hidden;}
+html{scroll-behavior:smooth;background:var(--bg);}
+html,body{overflow-x:hidden;overscroll-behavior-y:none;}
 body{
   background:var(--bg);color:var(--ink);font-family:var(--sans);
   font-size:16px;line-height:1.6;letter-spacing:-.01em;
@@ -71,15 +71,17 @@ img,video{max-width:100%;display:block;}
 main{position:relative;z-index:2;}
 
 /* ---------- nav ---------- */
-header{position:fixed;top:0;left:0;right:0;z-index:50;transition:background .3s,border-color .3s,backdrop-filter .3s;border-bottom:1px solid transparent;}
+header{position:fixed;top:0;left:0;right:0;z-index:50;transition:background .3s,border-color .3s,backdrop-filter .3s,transform .35s var(--ease);border-bottom:1px solid transparent;}
 header.solid{background:rgba(8,9,12,.72);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom-color:var(--line);}
+header.hide{transform:translateY(-102%);}
+header .wrap{max-width:none;padding:0 20px 0 16px;}  /* logo hugs the corner */
 .nav{display:flex;align-items:center;justify-content:space-between;height:68px;}
 .logo{display:flex;align-items:center;gap:11px;text-decoration:none;font-weight:800;letter-spacing:.3em;font-size:15px;color:#fff;font-family:var(--disp);}
 .logo i{width:19px;height:19px;border-radius:50%;background:var(--coral);box-shadow:0 0 18px rgba(255,107,82,.55);transition:transform .35s var(--ease);}
 .logo:hover i{transform:scale(1.25);}
 nav.links{display:flex;align-items:center;gap:4px;}
 nav.links a{color:var(--ink-2);text-decoration:none;font-size:14.5px;font-weight:500;padding:9px 14px;border-radius:10px;transition:.2s;}
-nav.links a:hover{color:var(--ink);background:rgba(255,255,255,.05);}
+nav.links a:not(.btn):hover{color:var(--ink);background:rgba(255,255,255,.05);}
 nav.links a.pricing-link{color:var(--ink);}
 .burger{display:none;}
 
@@ -124,7 +126,7 @@ nav.links a.pricing-link{color:var(--ink);}
 .sc-row{display:flex;align-items:center;justify-content:space-between;}
 .sc-pill{border:1.5px solid var(--coral);color:var(--coral);font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:.12em;padding:7px 15px;border-radius:999px;}
 .sc-live{color:var(--ink-2);font-size:14px;}
-.sc-live::before{content:"● ";color:var(--good);font-size:9px;vertical-align:2px;animation:pulse 2.2s infinite;}
+.sc-live::before{content:"●";color:var(--good);font-size:9px;vertical-align:2px;animation:pulse 2.2s infinite;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 .sc-k{margin-top:22px;color:var(--ink-2);font-family:var(--mono);font-size:12px;letter-spacing:.22em;}
 .sc-num{display:flex;align-items:baseline;gap:10px;margin-top:4px;}
@@ -327,7 +329,7 @@ body.pv-lock{overflow:hidden;}
       </div>
       <p class="micro reveal d4">free plan · 5 analyses a month · sign in with email or Google</p>
     </div>
-    <div class="reveal d2">
+    <div>
       <div class="score-card tilt" data-tilt>
         <div class="glare"></div>
         <div class="sc-row"><span class="sc-pill">REEL ANALYSIS</span><span class="sc-live">live</span></div>
@@ -342,10 +344,10 @@ body.pv-lock{overflow:hidden;}
   </div>
 
   <div class="stats">
-    <div class="stat reveal"><div class="n"><em data-count="100">0</em>+</div><div class="l">comments asking “how?”</div></div>
-    <div class="stat reveal d1"><div class="n">0</div><div class="l">things to install</div></div>
-    <div class="stat reveal d2"><div class="n">$0<em>/mo</em></div><div class="l">to start — free plan</div></div>
-    <div class="stat reveal d3"><div class="n"><em data-count="1">0</em> min</div><div class="l">sign-in to first analysis</div></div>
+    <div class="stat"><div class="n"><em data-count="100">0</em>+</div><div class="l">comments asking “how?”</div></div>
+    <div class="stat"><div class="n">0</div><div class="l">things to install</div></div>
+    <div class="stat"><div class="n">$0<em>/mo</em></div><div class="l">to start — free plan</div></div>
+    <div class="stat"><div class="n"><em data-count="1">0</em> min</div><div class="l">sign-in to first analysis</div></div>
   </div>
 </section>
 
@@ -358,9 +360,9 @@ body.pv-lock{overflow:hidden;}
 
 <!-- ================= DEMO ================= -->
 <section class="section wrap" id="demo">
-  <p class="slab reveal">// <b>01</b> · see it work</p>
-  <h2 class="reveal d1" style="max-width:18ch">Not slides. The real tool, running.</h2>
-  <div class="demo tilt reveal d2" data-tilt data-tilt-soft>
+  <p class="slab">// <b>01</b> · see it work</p>
+  <h2 class="reveal" style="max-width:18ch">Not slides. The real tool, running.</h2>
+  <div class="demo tilt" data-tilt data-tilt-soft>
     <div class="glare"></div>
     <span class="demo-badge">ANU LENS · LIVE</span>
     <video id="demovid" muted loop playsinline preload="none" poster="assets/demo-poster.jpg" aria-label="ANU LENS walkthrough">
@@ -368,31 +370,31 @@ body.pv-lock{overflow:hidden;}
       <source src="assets/demo.mp4" type="video/mp4"/>
     </video>
   </div>
-  <p class="demo-cap reveal d3">paste a reel → hook scored /100 → steal what works → chat with your whole library</p>
+  <p class="demo-cap">paste a reel → hook scored /100 → steal what works → chat with your whole library</p>
 </section>
 
 <!-- ================= FEATURES ================= -->
 <section class="section wrap" id="system">
-  <p class="slab reveal">// <b>02</b> · what's inside</p>
-  <h2 class="reveal d1" style="max-width:16ch">Four tools. One app. Free to start.</h2>
-  <p class="lead reveal d2">Not a course full of theory — working software, in your browser, one sign-in away.</p>
+  <p class="slab">// <b>02</b> · what's inside</p>
+  <h2 class="reveal" style="max-width:16ch">Four tools. One app. Free to start.</h2>
+  <p class="lead">Not a course full of theory — working software, in your browser, one sign-in away.</p>
   <div class="grid2">
-    <div class="card tilt reveal" data-tilt><div class="glare"></div><div class="ic">▤</div><span class="k">Lens</span><h3>Reels → intel</h3><p>Paste any reel. ANU transcribes and reads it — then hands you the hook, the structure, why it holds, and exactly what to steal, scored out of 100.</p></div>
-    <div class="card tilt reveal d1" data-tilt><div class="glare"></div><div class="ic">◉</div><span class="k">Library</span><h3>What's working, ranked</h3><p>Every reel you've analyzed, sorted by how strong and replicable it is. Filter by niche, and pull hooks from a searchable database of what actually performs.</p></div>
-    <div class="card tilt reveal d2" data-tilt><div class="glare"></div><div class="ic">✦</div><span class="k">Chat</span><h3>Ask your library</h3><p>An AI that answers only from the reels you've analyzed. “Give me 5 hooks for a reel about X.” Grounded in what's proven to work, not generic advice.</p></div>
-    <div class="card tilt reveal d3" data-tilt><div class="glare"></div><div class="ic">⚡</div><span class="k">Strategy</span><h3>Your next post, planned</h3><p>ANU reads your creator profile + your top reels and returns the exact hooks to use and videos to make. Your plan updates as your library grows.</p></div>
+    <div class="card tilt" data-tilt><div class="glare"></div><div class="ic">▤</div><span class="k">Lens</span><h3>Reels → intel</h3><p>Paste any reel. ANU transcribes and reads it — then hands you the hook, the structure, why it holds, and exactly what to steal, scored out of 100.</p></div>
+    <div class="card tilt" data-tilt><div class="glare"></div><div class="ic">◉</div><span class="k">Library</span><h3>What's working, ranked</h3><p>Every reel you've analyzed, sorted by how strong and replicable it is. Filter by niche, and pull hooks from a searchable database of what actually performs.</p></div>
+    <div class="card tilt" data-tilt><div class="glare"></div><div class="ic">✦</div><span class="k">Chat</span><h3>Ask your library</h3><p>An AI that answers only from the reels you've analyzed. “Give me 5 hooks for a reel about X.” Grounded in what's proven to work, not generic advice.</p></div>
+    <div class="card tilt" data-tilt><div class="glare"></div><div class="ic">⚡</div><span class="k">Strategy</span><h3>Your next post, planned</h3><p>ANU reads your creator profile + your top reels and returns the exact hooks to use and videos to make. Your plan updates as your library grows.</p></div>
   </div>
 </section>
 
 <!-- ================= INCLUDED ================= -->
 <section class="section wrap">
-  <p class="slab reveal">// <b>03</b> · everything in your account</p>
+  <p class="slab">// <b>03</b> · everything in your account</p>
   <div class="split">
     <div>
-      <h2 class="reveal d1">Your data.<br/>Your account.<br/>Your call.</h2>
-      <p class="lead reveal d2">Sign in with email or Google — no password to remember. Export everything as JSON or delete your account, any time, self-serve.</p>
+      <h2 class="reveal">Your data.<br/>Your account.<br/>Your call.</h2>
+      <p class="lead">Sign in with email or Google — no password to remember. Export everything as JSON or delete your account, any time, self-serve.</p>
     </div>
-    <div class="incl reveal d2">
+    <div class="incl">
       <div class="row"><span class="chk">✓</span><span><b>The full ANU LENS app</b> — analyzer, library, chat, and strategy, in your browser.</span></div>
       <div class="row"><span class="chk">✓</span><span><b>The analysis engine</b> — transcription and hook-scoring on every reel you paste.</span></div>
       <div class="row"><span class="chk">✓</span><span><b>Grounded chat</b> — an AI that answers only from the reels you've analyzed.</span></div>
@@ -405,33 +407,33 @@ body.pv-lock{overflow:hidden;}
 
 <!-- ================= STEPS ================= -->
 <section class="section wrap">
-  <p class="slab reveal">// <b>04</b> · posting smarter tonight</p>
+  <p class="slab">// <b>04</b> · posting smarter tonight</p>
   <div class="steps">
-    <div class="step reveal"><span class="n">STEP</span><h3>Sign in free</h3><p>Email magic link or Google — no password, no card. You're in the app in under a minute.</p></div>
-    <div class="step reveal d1"><span class="n">STEP</span><h3>Paste a reel</h3><p>Drop in any reel in your niche. ANU transcribes it, reads it, and scores the hook out of 100.</p></div>
-    <div class="step reveal d2"><span class="n">STEP</span><h3>Steal what works</h3><p>Watch your library fill with ranked hooks, then let Strategy plan your next post from what's proven.</p></div>
+    <div class="step"><span class="n">STEP</span><h3>Sign in free</h3><p>Email magic link or Google — no password, no card. You're in the app in under a minute.</p></div>
+    <div class="step"><span class="n">STEP</span><h3>Paste a reel</h3><p>Drop in any reel in your niche. ANU transcribes it, reads it, and scores the hook out of 100.</p></div>
+    <div class="step"><span class="n">STEP</span><h3>Steal what works</h3><p>Watch your library fill with ranked hooks, then let Strategy plan your next post from what's proven.</p></div>
   </div>
 </section>
 
 <!-- ================= PROOF ================= -->
 <section class="section wrap" id="proof">
-  <p class="slab reveal">// <b>05</b> · you already watched it work</p>
-  <h2 class="reveal d1" style="max-width:22ch">Every time I posted the dashboard, the comments said the same thing.</h2>
+  <p class="slab">// <b>05</b> · you already watched it work</p>
+  <h2 class="reveal" style="max-width:22ch">Every time I posted the dashboard, the comments said the same thing.</h2>
   <div class="tgrid" id="proof-grid"></div>
-  <p class="lead reveal">Real comments from the videos. So instead of answering one DM at a time — here's the whole build.</p>
+  <p class="lead">Real comments from the videos. So instead of answering one DM at a time — here's the whole build.</p>
 </section>
 
 <!-- ================= FOR WHO ================= -->
 <section class="section wrap">
-  <p class="slab reveal">// <b>06</b> · is this you</p>
+  <p class="slab">// <b>06</b> · is this you</p>
   <div class="forwho">
-    <div class="fw yes tilt reveal" data-tilt><div class="glare"></div><h3>Use this if —</h3><ul>
+    <div class="fw yes tilt" data-tilt><div class="glare"></div><h3>Use this if —</h3><ul>
       <li>You post (or want to post) short-form and guess at what works</li>
       <li>You save reels “for inspiration” and never look at them again</li>
       <li>You want a system that learns your niche, not generic AI advice</li>
       <li>You're building a personal brand and want the receipts</li>
     </ul></div>
-    <div class="fw no reveal d1"><h3>Skip it if —</h3><ul>
+    <div class="fw no"><h3>Skip it if —</h3><ul>
       <li>You don't make short-form content and don't plan to</li>
       <li>You want a magic posting bot, not a sharper eye</li>
       <li>You're looking for a get-rich button, not a system to operate</li>
@@ -441,9 +443,9 @@ body.pv-lock{overflow:hidden;}
 
 <!-- ================= FAQ ================= -->
 <section class="section wrap" id="faq">
-  <p class="slab reveal">// <b>07</b> · straight answers</p>
-  <h2 class="reveal d1">Questions, answered.</h2>
-  <div class="faq reveal d2">
+  <p class="slab">// <b>07</b> · straight answers</p>
+  <h2 class="reveal">Questions, answered.</h2>
+  <div class="faq">
     <details open><summary>Do I need to install anything? <span class="plus">+</span></summary><p>No. It's a web app — sign in with an email magic link or Google and you're using it. No terminal, no setup script, no API keys.</p></details>
     <details><summary>Is the free plan actually free? <span class="plus">+</span></summary><p>Yes — 5 reel analyses a month, plus the library, chat, and strategy tools, with no card on file. Pro removes the limit when you're posting enough for it to matter.</p></details>
     <details><summary>What happens to my data? <span class="plus">+</span></summary><p>It's yours. Export everything as JSON from Settings any time, and delete your account (and all its data) yourself — no email to support required. The <a href="https://anu-app.vercel.app/privacy">privacy policy</a> is written in plain English.</p></details>
@@ -454,7 +456,7 @@ body.pv-lock{overflow:hidden;}
 
 <!-- ================= FOUNDER ================= -->
 <section class="section wrap">
-  <div class="founder tilt reveal" data-tilt data-tilt-soft>
+  <div class="founder tilt" data-tilt data-tilt-soft>
     <div class="glare"></div>
     <div class="badge-op">AF</div>
     <div>
@@ -467,7 +469,7 @@ body.pv-lock{overflow:hidden;}
 
 <!-- ================= WAITLIST ================= -->
 <section class="section wrap" style="padding-top:0">
-  <div class="waitlist reveal">
+  <div class="waitlist">
     <h3>Not ready to sign up?</h3>
     <p>Drop your email — I'll send you a free hook teardown and tell you the moment ANU ships something new.</p>
     <form class="wl-form" id="wl-form" novalidate>
@@ -482,8 +484,8 @@ body.pv-lock{overflow:hidden;}
 <section class="section wrap final">
   <span class="eyebrow" style="justify-content:center">system ready</span>
   <h2 class="reveal" style="margin-top:20px">Stop guessing.<br/>Start stealing what works.</h2>
-  <p class="sub reveal d1">Free to start · Pro <span data-price>$47.99</span>/mo for unlimited · cancel anytime</p>
-  <div class="cta-row reveal d2" style="margin-top:32px">
+  <p class="sub">Free to start · Pro <span data-price>$47.99</span>/mo for unlimited · cancel anytime</p>
+  <div class="cta-row" style="margin-top:32px">
     <a class="btn btn-primary" data-app data-mag href="#">Start free — no card</a>
     <a class="btn btn-ghost" data-buy data-mag href="#"><span>Get Pro — <span data-price>$47.99</span>/mo</span></a>
     <a class="btn btn-ghost" data-mag href="#pricing">Compare plans</a>
@@ -544,12 +546,12 @@ body.pv-lock{overflow:hidden;}
 
 <script>
 /* ================= CONFIG ================= */
-const APP_URL   = "https://anu-app.vercel.app";
-const BUY_URL   = "https://buy.stripe.com/bJe3cu8wh2gW26r2Ef6wE00"; // Stripe Payment Link (Pro)
-const PRO_PRICE = "$47.99";
-const DISCORD_URL = "https://discord.gg/hKkSgUZWeQ";
-const EMAIL_ENDPOINT = "";       // Formspree URL to enable the waitlist
-const PLAUSIBLE_DOMAIN = "";     // Plausible domain for privacy-first analytics
+const APP_URL   ="https://anu-app.vercel.app";
+const BUY_URL   ="https://buy.stripe.com/bJe3cu8wh2gW26r2Ef6wE00"; // Stripe Payment Link (Pro)
+const PRO_PRICE ="$47.99";
+const DISCORD_URL ="https://discord.gg/hKkSgUZWeQ";
+const EMAIL_ENDPOINT ="";       // Formspree URL to enable the waitlist
+const PLAUSIBLE_DOMAIN ="";     // Plausible domain for privacy-first analytics
 /* ========================================== */
 
 const $$=(s,c=document)=>[...c.querySelectorAll(s)];
@@ -569,7 +571,13 @@ $$("[data-buy]").forEach(a=>a.addEventListener("click",()=>track("buy_pro_click"
 
 /* ---------- nav solid on scroll ---------- */
 const hdr=document.getElementById("hdr");
-addEventListener("scroll",()=>hdr.classList.toggle("solid",scrollY>24),{passive:true});
+let lastY=0;
+addEventListener("scroll",()=>{
+  hdr.classList.toggle("solid",scrollY>24);
+  // hide on scroll down, return on scroll up
+  hdr.classList.toggle("hide",scrollY>lastY&&scrollY>140&&!document.body.classList.contains("pv-lock"));
+  lastY=scrollY;
+},{passive:true});
 
 /* ---------- cursor scanner ---------- */
 if(finePointer&&!reduceM){
@@ -633,8 +641,8 @@ if(finePointer&&!reduceM){
     { text:"ok this is the coldest setup I've seen", ctx:"on the strategy reel" },
     { text:"HOW. tutorial when", ctx:"on the hook-score reel" },
   ];
-  grid.innerHTML=PROOF.map((p,i)=>`<div class="tcard reveal d${i%3}"><div class="tx">“${p.text}”</div><div class="cx">${p.ctx}</div></div>`).join("");
-  $$(".tcard").forEach(el=>io.observe(el));
+  grid.innerHTML=PROOF.map((p,i)=>`<div class="tcard d${i%3}"><div class="tx">“${p.text}”</div><div class="cx">${p.ctx}</div></div>`).join("");
+  
 })();
 
 /* ---------- demo video: play when visible ---------- */
