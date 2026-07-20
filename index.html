@@ -3,21 +3,22 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>ANU LENS — Know exactly what to post</title>
+<title>ANU LENS — see why a reel works, then make yours work</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='9' fill='%23ff6b52'/%3E%3C/svg%3E"/>
-<meta name="description" content="Paste any reel — ANU reads it and hands you the hook, the structure, and what to steal. Free to start: 5 analyses a month, no card."/>
-<meta property="og:title" content="ANU LENS — Know exactly what to post"/>
-<meta property="og:description" content="Analyze reels, rank what's working, build your strategy. Hosted, nothing to install. Free plan, no card."/>
+<meta name="description" content="I built ANU because I was tired of guessing what to post. Paste any reel and it shows you the hook, how the video is structured, and what's actually worth stealing — then it plans your next post from what's proven in your niche. Free to start: five analyses a month, no card."/>
+<meta name="author" content="Andre Fox"/>
+<meta property="og:title" content="ANU LENS — see why a reel works, then make yours work"/>
+<meta property="og:description" content="Paste a reel, get the hook scored out of 100 and the exact thing worth stealing. Built by a creator who got asked 'how?' a hundred times and finally opened the tool up. Free plan, no card."/>
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="https://andrefox1207.github.io/anu-site/"/>
 <meta property="og:image" content="https://andrefox1207.github.io/anu-site/assets/demo-poster.jpg"/>
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="ANU LENS — Know exactly what to post"/>
-<meta name="twitter:description" content="Paste a reel, get the hook + what to steal. Free to start, no card."/>
+<meta name="twitter:title" content="ANU LENS — see why a reel works, then make yours work"/>
+<meta name="twitter:description" content="Paste a reel, get the hook scored /100 and what's worth stealing. Free to start, no card."/>
 <meta name="twitter:image" content="https://andrefox1207.github.io/anu-site/assets/demo-poster.jpg"/>
 <link rel="canonical" href="https://andrefox1207.github.io/anu-site/"/>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"SoftwareApplication","name":"ANU LENS","applicationCategory":"BusinessApplication","operatingSystem":"Web","description":"A hosted content OS for creators. Analyze reels, rank what's working, and build your posting strategy from a library of proven hooks.","brand":{"@type":"Brand","name":"ANU"},"offers":[{"@type":"Offer","name":"Free","price":"0","priceCurrency":"USD","availability":"https://schema.org/InStock","url":"https://anu-app.vercel.app"},{"@type":"Offer","name":"Pro","price":"47.99","priceCurrency":"USD","availability":"https://schema.org/InStock","url":"https://buy.stripe.com/bJe3cu8wh2gW26r2Ef6wE00"}]}
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"ANU LENS","applicationCategory":"BusinessApplication","operatingSystem":"Web","description":"Paste a reel and ANU shows you the hook, the structure, and what's worth stealing — then plans your next post from what's proven in your niche. Built by creator Andre Fox. Free plan with five analyses a month; Pro is unlimited.","author":{"@type":"Person","name":"Andre Fox"},"brand":{"@type":"Brand","name":"ANU"},"offers":[{"@type":"Offer","name":"Free","price":"0","priceCurrency":"USD","availability":"https://schema.org/InStock","url":"https://anu-app.vercel.app"},{"@type":"Offer","name":"Pro","price":"47.99","priceCurrency":"USD","availability":"https://schema.org/InStock","url":"https://buy.stripe.com/bJe3cu8wh2gW26r2Ef6wE00"}]}
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -48,6 +49,9 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 ::selection{background:var(--coral);color:#fff;}
+/* custom cursor: white with dark outline, native ~22px size (no follower, no scaling) */
+body{cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22'><path d='M4 1.5 L4 17 L8.2 13.2 L11 19.6 L13.8 18.3 L11.1 12.1 L17 12 Z' fill='white' stroke='%2308090c' stroke-width='1.3' stroke-linejoin='round'/></svg>") 4 2, auto;}
+a,button,summary,.btn,[data-mag]{cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22'><path d='M7 10.5 V4.2 a1.6 1.6 0 0 1 3.2 0 V9 l5.6 1.1 a2 2 0 0 1 1.6 2.2 l-.7 4.4 a2.4 2.4 0 0 1-2.4 2 H10.2 a2.4 2.4 0 0 1-1.8-.8 L4.6 13.4 a1.5 1.5 0 0 1 2.1-2.1 Z' fill='white' stroke='%2308090c' stroke-width='1.3' stroke-linejoin='round'/></svg>") 8 3, pointer;}
 a{color:inherit;}
 img,video{max-width:100%;display:block;}
 .wrap{max-width:1200px;margin:0 auto;padding:0 clamp(20px,4vw,48px);}
@@ -83,6 +87,7 @@ nav.links{display:flex;align-items:center;gap:4px;}
 nav.links a{color:var(--ink-2);text-decoration:none;font-size:14.5px;font-weight:500;padding:9px 14px;border-radius:10px;transition:.2s;}
 nav.links a:not(.btn):hover{color:var(--ink);background:rgba(255,255,255,.05);}
 nav.links a.pricing-link{color:var(--ink);}
+nav.links a.btn-primary{color:#fff;} /* beat nav.links a's gray — this was the 'washed out' Start free */
 .burger{display:none;}
 
 /* ---------- buttons: 3D press + magnetic ---------- */
@@ -175,7 +180,7 @@ h2{font-family:var(--disp);font-weight:800;font-size:clamp(30px,4.4vw,54px);lett
 .rail .rl{position:absolute;left:14px;font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--ink-3);transition:color .3s;white-space:nowrap;}
 .rail .rl.on{color:var(--coral);}
 .rail .rl[data-b="0"]{top:-2px}.rail .rl[data-b="1"]{top:32%}.rail .rl[data-b="2"]{top:64%}.rail .rl[data-b="3"]{bottom:-2px}
-.beats{position:relative;width:min(600px,88vw);height:min(60vh,520px);}
+.beats{position:relative;width:min(600px,88vw);height:min(56vh,480px);margin-top:22vh;} /* sits below story-head */
 .beat{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;opacity:0;pointer-events:none;will-change:transform,opacity;}
 .panel{background:linear-gradient(180deg,#14151d,#101118);border:1px solid var(--line-2);border-radius:24px;box-shadow:0 50px 120px rgba(0,0,0,.6);}
 .p-eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.22em;color:var(--coral);}
@@ -273,7 +278,7 @@ h2{font-family:var(--disp);font-weight:800;font-size:clamp(30px,4.4vw,54px);lett
 /* final */
 .final{text-align:center;padding-bottom:clamp(80px,12vh,140px);}
 .final h2{font-size:clamp(36px,6vw,72px);}
-.final .cta-row{justify-content:center;}
+.final .cta-row{justify-content:center;gap:20px;}
 .final .sub{color:var(--ink-2);margin-top:18px;font-size:17px;}
 
 footer{border-top:1px solid var(--line);padding:26px 0;position:relative;z-index:2;background:var(--bg);}
@@ -317,7 +322,7 @@ body.pv-lock{overflow:hidden;}
   .founder{grid-template-columns:1fr;}
 }
 @media (max-width:720px){
-  nav.links a:not(.pricing-link):not(.btn){display:none;}
+  nav.links a:not(.pricing-link):not(.login-link):not(.btn){display:none;}
   .hero{padding-top:96px;}
 }
 @media (prefers-reduced-motion:reduce){
@@ -345,6 +350,7 @@ body.pv-lock{overflow:hidden;}
       <a href="#proof">Proof</a>
       <a href="#faq">FAQ</a>
       <a href="#pricing" class="pricing-link">Pricing</a>
+      <a href="https://anu-app.vercel.app" class="login-link">Log in</a>
       <a class="btn btn-primary btn-sm" data-app data-mag href="#">Start free</a>
     </nav>
   </div>
@@ -551,7 +557,6 @@ body.pv-lock{overflow:hidden;}
 <!-- ================= FOUNDER ================= -->
 <section class="section wrap">
   <div class="founder">
-    <div class="glare"></div>
     <div class="badge-op">AF</div>
     <div>
       <p class="meta">Operator · @andrekingfox · Minneapolis</p>
@@ -604,7 +609,7 @@ body.pv-lock{overflow:hidden;}
           <li><span class="chk">✓</span>Email or Google sign-in</li>
           <li><span class="chk">✓</span>JSON export &amp; self-serve deletion</li>
         </ul>
-        <a class="btn btn-ghost" data-app data-mag href="#">Start free — no card</a>
+        <a class="btn btn-ghost" data-app href="#">Start free — no card</a>
       </div>
       <div class="pcard feat tilt" data-tilt>
         <div class="glare"></div>
@@ -618,7 +623,7 @@ body.pv-lock{overflow:hidden;}
           <li><span class="chk">✓</span>Priority access to new tools (posting, briefs)</li>
           <li><span class="chk">✓</span>Cancel in one click, keep your library</li>
         </ul>
-        <a class="btn btn-primary" data-buy data-mag href="#"><span>Get Pro — <span data-price>$47.99</span>/mo</span></a>
+        <a class="btn btn-primary" data-buy href="#"><span>Get Pro — <span data-price>$47.99</span>/mo</span></a>
         <p class="pfine">Secure checkout by Stripe. Sign in after payment with the same email and Pro activates automatically.</p>
       </div>
     </div>
@@ -702,11 +707,13 @@ if(finePointer&&!reduceM){
 /* ---------- magnetic buttons ---------- */
 if(finePointer&&!reduceM){
   $$("[data-mag]").forEach(btn=>{
+    // transition OFF while tracking (it fights per-frame transforms = jitter/overlap), springy return on leave
+    btn.addEventListener("pointerenter",()=>{ btn.style.transition="none"; });
     btn.addEventListener("pointermove",e=>{
       const r=btn.getBoundingClientRect();
-      btn.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.18}px,${(e.clientY-r.top-r.height/2)*.3}px)`;
+      btn.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.12}px,${(e.clientY-r.top-r.height/2)*.18}px)`;
     });
-    btn.addEventListener("pointerleave",()=>{ btn.style.transform=""; });
+    btn.addEventListener("pointerleave",()=>{ btn.style.transition="transform .35s var(--ease)"; btn.style.transform=""; });
   });
 }
 
@@ -748,6 +755,8 @@ if(finePointer&&!reduceM){
     const o1=cl(p,.25,.30)*(1-cl(p,.51,.56));
     const o2=cl(p,.55,.60)*(1-cl(p,.76,.81));
     const o3=cl(p,.80,.86);
+    // .beat is pointer-events:none by default — re-enable the active beat so its CTA is clickable
+    [o0,o1,o2,o3].forEach((o,i)=>beats[i].style.pointerEvents=o>.6?"auto":"none");
     beats[0].style.opacity=o0; beats[0].style.transform=`translate3d(0,${(1-o0)*30}px,0)`;
     beats[1].style.opacity=o1; beats[1].style.transform=`perspective(1200px) rotateY(${90*(1-cl(p,.25,.33))}deg)`;
     beats[2].style.opacity=o2; beats[2].style.transform=`translate3d(0,${(1-o2)*30}px,0)`;
